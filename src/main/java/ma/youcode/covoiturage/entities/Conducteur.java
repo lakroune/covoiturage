@@ -20,6 +20,4 @@ public class Conducteur extends Utilisateur {
     @OneToMany(mappedBy = "conducteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vehicule> vehicules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "conducteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Trajet> trajets = new ArrayList<>();
 }

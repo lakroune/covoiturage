@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,6 +29,12 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "point_montee_id", nullable = false)
+    private Long pointMonteeId;
+
+    @Column(name = "point_descente_id", nullable = false)
+    private Long pointDescenteId;
+
     @Column(nullable = false)
     private Integer nombrePlaces;
 
@@ -50,7 +55,4 @@ public class Reservation {
     @ManyToOne 
     @JoinColumn(name = "trajet_id", nullable = false)
     private Trajet trajet;
-
-    
 }
-    

@@ -3,9 +3,7 @@ package ma.youcode.covoiturage.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Passager extends Utilisateur {
 
-    @OneToMany(mappedBy = "passager")
+    @OneToMany(mappedBy = "passager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
 
-    
 }

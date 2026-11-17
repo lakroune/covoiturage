@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -32,28 +33,25 @@ public class Trajet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String villeDepart;
-    private String villeArrivee;
+    @Column(nullable = false)
     private LocalDateTime dateDepart;
+    @Column(nullable = false)
     private Integer placesProposees;
 
     @Enumerated(EnumType.STRING)
     private StatutTrajet statut;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "conducteur_id", nullable = false)
     private Conducteur conducteur;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "vehicule_id", nullable = false)
     private Vehicule vehicule;
 
-    @OneToMany(
-            mappedBy = "trajet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "trajet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PointArret> pointsArret = new ArrayList<>();
 
-    @OneToMany(mappedBy = "trajet")
+    @OneToMany(mappedBy = "trajet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
 }

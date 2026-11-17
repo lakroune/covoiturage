@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,18 +30,21 @@ public class PointArret {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String ville;
+
+    @Column(nullable = false)
     private Integer ordre;
+
+    @Column(nullable = false)
     private LocalDateTime heurePassage;
+
+    @Column(nullable = false)
     private BigDecimal prixDepuisDepart;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "trajet_id", nullable = false)
     private Trajet trajet;
 
-    @OneToMany(mappedBy = "pointMontee")
-    private List<Reservation> reservationsMontee = new ArrayList<>();
-
-    @OneToMany(mappedBy = "pointDescente")
-    private List<Reservation> reservationsDescente = new ArrayList<>();
+    
 }

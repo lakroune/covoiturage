@@ -3,10 +3,7 @@ package ma.youcode.covoiturage.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +17,9 @@ public class Conducteur extends Utilisateur {
 
     private String numeroPermis;
 
-    @OneToMany(mappedBy = "conducteur", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "conducteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vehicule> vehicules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "conducteur", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "conducteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Trajet> trajets = new ArrayList<>();
 }

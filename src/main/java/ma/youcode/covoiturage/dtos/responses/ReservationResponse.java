@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ma.youcode.covoiturage.entities.PointArret;
 import ma.youcode.covoiturage.enums.StatutReservation;
 
 @Getter
@@ -15,8 +14,8 @@ import ma.youcode.covoiturage.enums.StatutReservation;
 public class ReservationResponse {
 
     private Long id;
-    private PointArret pointMontee;
-    private PointArret pointDescente;
+    private PointArretResponse pointMontee;
+    private PointArretResponse pointDescente;
     private Integer nombrePlaces;
     private BigDecimal montantTotal;
     private LocalDateTime dateReservation;

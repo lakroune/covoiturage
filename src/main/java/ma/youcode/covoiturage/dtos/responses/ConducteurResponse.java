@@ -1,4 +1,18 @@
 package ma.youcode.covoiturage.dtos.responses;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class ConducteurResponse {
+
+    private Long id;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String telephone;
+    private String numeroPermis;
 }

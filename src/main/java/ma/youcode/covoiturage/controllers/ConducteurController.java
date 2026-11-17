@@ -2,12 +2,13 @@ package ma.youcode.covoiturage.controllers;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import ma.youcode.covoiturage.services.ConducteurService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,45 +19,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/conducteurs")
+@Tag(name = "Conducteur", description = "API pour gérer les conducteurs")
 public class ConducteurController {
+    private final ConducteurService conducteurService;
 
     @PostMapping
-    public ResponseEntity<ConducteurResponse> create(
-            @RequestBody ConducteurRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ConducteurResponse create(@RequestBody ConducteurRequest request) {
+        return conducteurService.create(request);
     }
 
     @GetMapping
-    public ResponseEntity<List<ConducteurResponse>> findAll() {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public List<ConducteurResponse> findAll() {
+        return conducteurService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ConducteurResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ConducteurResponse findById(@PathVariable Long id) {
+        return conducteurService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ConducteurResponse> update(
+    public ConducteurResponse update(
             @PathVariable Long id, @RequestBody ConducteurRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        return conducteurService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public void delete(@PathVariable Long id) {
+        conducteurService.delete(id);
     }
 
     @GetMapping("/{id}/vehicules")
-    public ResponseEntity<List<VehiculeResponse>> findVehiculesByConducteur(
-            @PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public List<VehiculeResponse> findVehiculesByConducteur(@PathVariable Long id) {
+        return conducteurService.findVehiculesByConducteur(id);
     }
 
     @GetMapping("/{id}/trajets")
-    public ResponseEntity<List<TrajetResponse>> findTrajetsByConducteur(
-            @PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public List<TrajetResponse> findTrajetsByConducteur(@PathVariable Long id) {
+        return conducteurService.findTrajetsByConducteur(id);
     }
 }

@@ -108,7 +108,9 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public List<ConducteurResponse> searchByEmail(String email) {
-        return List.of();
+        return conducteurRepository.findByEmailContainingIgnoreCase(email).stream()
+                .map(conducteurMapper::toResponse)
+                .toList();
     }
 
     @Override

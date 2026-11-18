@@ -23,6 +23,18 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorMessage> handleConflictException(
+            ConflictException exception, HttpServletRequest request) {
+        return buildErrorResponse(exception.getMessage(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorMessage> handleForbiddenException(
+            ForbiddenException exception, HttpServletRequest request) {
+        return buildErrorResponse(exception.getMessage(), HttpStatus.FORBIDDEN, request);
+    }
+
     private ResponseEntity<ErrorMessage> buildErrorResponse(
             String message, HttpStatus status, HttpServletRequest request) {
         ErrorMessage body = new ErrorMessage(

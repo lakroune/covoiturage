@@ -11,6 +11,7 @@ import ma.youcode.covoiturage.entities.Passager;
 import ma.youcode.covoiturage.exceptions.ConflictException;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.PassagerMapper;
+import ma.youcode.covoiturage.mappers.ReservationMapper;
 import ma.youcode.covoiturage.repositories.PassagerRepository;
 import ma.youcode.covoiturage.services.PassagerService;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class PassagerServiceImpl implements PassagerService {
 
     private final PassagerRepository passagerRepository;
     private final PassagerMapper passagerMapper;
+    private final ReservationMapper reservationMapper;
 
     @Override
     public PassagerResponse create(PassagerRequest request) {
@@ -77,6 +79,12 @@ public class PassagerServiceImpl implements PassagerService {
 
     @Override
     public List<ReservationResponse> findReservations(Long id) {
-        return List.of();
+        Passager passager = passagerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Passager introuvable avec l'identifiant : " + id));
+
+        return passager.getReservations().stream()
+                .map(reservationMapper::toResponse)
+                .toList();
     }
 }

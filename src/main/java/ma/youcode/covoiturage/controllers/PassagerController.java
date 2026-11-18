@@ -2,6 +2,7 @@ package ma.youcode.covoiturage.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequest;
@@ -26,7 +27,7 @@ public class PassagerController {
     private final PassagerService passagerService;
 
     @PostMapping
-    public PassagerResponse create(@RequestBody PassagerRequest request) {
+    public PassagerResponse create(@Valid @RequestBody PassagerRequest request) {
         return passagerService.create(request);
     }
 
@@ -41,7 +42,8 @@ public class PassagerController {
     }
 
     @PutMapping("/{id}")
-    public PassagerResponse update(@PathVariable Long id, @RequestBody PassagerRequest request) {
+    public PassagerResponse update(
+            @PathVariable Long id, @Valid @RequestBody PassagerRequest request) {
         return passagerService.update(id, request);
     }
 

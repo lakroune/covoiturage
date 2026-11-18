@@ -2,6 +2,7 @@ package ma.youcode.covoiturage.controllers;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.ReservationRequest;
@@ -25,7 +26,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ReservationResponse create(@RequestBody ReservationRequest request) {
+    public ReservationResponse create(@Valid @RequestBody ReservationRequest request) {
         return reservationService.create(request);
     }
 

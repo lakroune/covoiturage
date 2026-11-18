@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
@@ -30,7 +31,7 @@ public class TrajetController {
     private final TrajetService trajetService;
 
     @PostMapping
-    public TrajetResponse create(@RequestBody TrajetRequest request) {
+    public TrajetResponse create(@Valid @RequestBody TrajetRequest request) {
         return trajetService.create(request);
     }
 

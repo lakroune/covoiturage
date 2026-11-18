@@ -65,7 +65,9 @@ public class PassagerServiceImpl implements PassagerService {
             throw new ConflictException("Le téléphone doit être unique.");
         }
 
-        passagerMapper.updateEntity(request, passager);
+        passager.setNom(request.getNom());
+        passager.setPrenom(request.getPrenom());
+        passager.setTelephone(request.getTelephone());
 
         return passagerMapper.toResponse(passagerRepository.save(passager));
     }

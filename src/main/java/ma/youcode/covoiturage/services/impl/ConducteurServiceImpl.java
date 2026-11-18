@@ -9,6 +9,7 @@ import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.exceptions.ConflictException;
+import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.ConducteurMapper;
 import ma.youcode.covoiturage.repositories.ConducteurRepository;
 import ma.youcode.covoiturage.services.ConducteurService;
@@ -45,7 +46,11 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public ConducteurResponse findById(Long id) {
-        return null;
+        Conducteur conducteur = conducteurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + id));
+
+        return conducteurMapper.toResponse(conducteur);
     }
 
     @Override

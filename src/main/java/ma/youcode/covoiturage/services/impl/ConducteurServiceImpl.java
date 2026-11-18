@@ -69,6 +69,11 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public void delete(Long id) {
+        Conducteur conducteur = conducteurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + id));
+
+        conducteurRepository.delete(conducteur);
     }
 
     @Override

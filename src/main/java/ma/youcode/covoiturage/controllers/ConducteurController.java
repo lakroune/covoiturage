@@ -55,7 +55,7 @@ public class ConducteurController {
     }
 
     @GetMapping(value = "/search", params = "email")
-    public List<ConducteurResponse> searchByEmail(@RequestParam String email) {
+    public ConducteurResponse searchByEmail(@RequestParam String email) {
         return conducteurService.searchByEmail(email);
     }
 

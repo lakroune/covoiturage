@@ -107,10 +107,12 @@ public class ConducteurServiceImpl implements ConducteurService {
     }
 
     @Override
-    public List<ConducteurResponse> searchByEmail(String email) {
-        return conducteurRepository.findByEmailContainingIgnoreCase(email).stream()
-                .map(conducteurMapper::toResponse)
-                .toList();
+    public ConducteurResponse searchByEmail(String email) {
+        Conducteur conducteur = conducteurRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'email : " + email));
+
+        return conducteurMapper.toResponse(conducteur);
     }
 
     @Override

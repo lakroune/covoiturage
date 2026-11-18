@@ -24,7 +24,7 @@ public interface ConducteurService {
 
     List<TrajetResponse> findTrajetsByConducteur(Long id);
 
-    List<ConducteurResponse> searchByEmail(String email);
+    ConducteurResponse searchByEmail(String email);
 
     List<ConducteurResponse> serachByNom(String nom);
 }

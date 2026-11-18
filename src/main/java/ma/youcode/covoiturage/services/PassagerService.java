@@ -17,7 +17,7 @@ public interface PassagerService {
 
     PassagerResponse update(Long id, PassagerRequestUpdate request);
 
-    List<PassagerResponse> searchByEmail(String email);
+    PassagerResponse searchByEmail(String email);
 
     List<ReservationResponse> findReservations(Long id);
 }

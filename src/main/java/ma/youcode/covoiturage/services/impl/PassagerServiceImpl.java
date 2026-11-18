@@ -73,10 +73,14 @@ public class PassagerServiceImpl implements PassagerService {
     }
 
     @Override
-    public List<PassagerResponse> searchByEmail(String email) {
-        return passagerRepository.findByEmailContainingIgnoreCase(email).stream()
-                .map(passagerMapper::toResponse)
-                .toList();
+    public PassagerResponse searchByEmail(String email) {
+        Passager passager = passagerRepository.findByEmail(email);
+        if (passager == null) {
+            throw new ResourceNotFoundException(
+                    "Passager introuvable avec l'email : " + email);
+        }
+
+        return passagerMapper.toResponse(passager);
     }
 
     @Override

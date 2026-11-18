@@ -49,7 +49,7 @@ public class PassagerController {
     }
 
     @GetMapping(value = "/search", params = "email")
-    public List<PassagerResponse> searchByEmail(@RequestParam String email) {
+    public PassagerResponse searchByEmail(@RequestParam String email) {
         return passagerService.searchByEmail(email);
     }
 

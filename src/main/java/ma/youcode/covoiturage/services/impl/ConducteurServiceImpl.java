@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
+import ma.youcode.covoiturage.dtos.requests.ConducteurRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
@@ -54,8 +55,16 @@ public class ConducteurServiceImpl implements ConducteurService {
     }
 
     @Override
-    public ConducteurResponse update(Long id, ConducteurRequest request) {
-        return null;
+    public ConducteurResponse update(Long id, ConducteurRequestUpdate request) {
+        Conducteur conducteur = conducteurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + id));
+
+        conducteur.setNom(request.getNom());
+        conducteur.setPrenom(request.getPrenom());
+        conducteur.setTelephone(request.getTelephone());
+
+        return conducteurMapper.toResponse(conducteurRepository.save(conducteur));
     }
 
     @Override

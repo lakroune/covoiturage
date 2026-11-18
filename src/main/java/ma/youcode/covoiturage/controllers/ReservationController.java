@@ -2,6 +2,7 @@ package ma.youcode.covoiturage.controllers;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.ReservationRequest;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/reservations")
+@Tag(name = "Reservation", description = "API pour gérer les réservations")
 public class ReservationController {
 
     private final ReservationService reservationService;

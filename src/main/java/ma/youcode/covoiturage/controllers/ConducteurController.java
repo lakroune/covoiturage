@@ -9,19 +9,20 @@ import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.services.ConducteurService;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/conducteurs")
+@RequestMapping("/api/v1/conducteurs")
 @Tag(name = "Conducteur", description = "API pour gérer les conducteurs")
+
 public class ConducteurController {
     private final ConducteurService conducteurService;
 
@@ -46,9 +47,14 @@ public class ConducteurController {
         return conducteurService.update(id, request);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        conducteurService.delete(id);
+    @GetMapping(value = "/search", params = "nom")
+    public List<ConducteurResponse> searchByNom(@RequestParam String nom) {
+        return conducteurService.serachByNom(nom);
+    }
+
+    @GetMapping(value = "/search", params = "email")
+    public List<ConducteurResponse> searchByEmail(@RequestParam String email) {
+        return conducteurService.searchByEmail(email);
     }
 
     @GetMapping("/{id}/vehicules")

@@ -38,7 +38,9 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public List<ConducteurResponse> findAll() {
-        return null;
+        return conducteurRepository.findAll().stream()
+                .map(conducteurMapper::toResponse)
+                .toList();
     }
 
     @Override

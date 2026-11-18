@@ -2,7 +2,8 @@ package ma.youcode.covoiturage.dtos.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,8 @@ public class VehiculeRequest {
     private String couleur;
 
     @NotNull(message = "La capacité est obligatoire")
-    @Positive(message = "La capacité doit être positive")
+    @Min(value = 1, message = "La capacité doit être au minimum de 1 place")
+    @Max(value = 8, message = "La capacité doit être au maximum de 8 places")
     private Integer capacite;
 
     @NotNull(message = "Le conducteur est obligatoire")

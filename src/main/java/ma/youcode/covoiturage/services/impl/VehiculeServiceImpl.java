@@ -6,6 +6,7 @@ import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.entities.Vehicule;
+import ma.youcode.covoiturage.exceptions.ConflictException;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.VehiculeMapper;
 import ma.youcode.covoiturage.repositories.ConducteurRepository;
@@ -24,6 +25,10 @@ public class VehiculeServiceImpl implements VehiculeService {
 
     @Override
     public VehiculeResponse create(VehiculeRequest request) {
+        if (vehiculeRepository.existsByImmatriculation(request.getImmatriculation())) {
+            throw new ConflictException("L'immatriculation doit être unique.");
+        }
+
         Conducteur conducteur = conducteurRepository.findById(request.getConducteurId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + request.getConducteurId()));

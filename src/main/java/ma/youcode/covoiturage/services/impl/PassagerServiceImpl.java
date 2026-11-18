@@ -70,7 +70,9 @@ public class PassagerServiceImpl implements PassagerService {
 
     @Override
     public List<PassagerResponse> searchByEmail(String email) {
-        return List.of();
+        return passagerRepository.findByEmailContainingIgnoreCase(email).stream()
+                .map(passagerMapper::toResponse)
+                .toList();
     }
 
     @Override

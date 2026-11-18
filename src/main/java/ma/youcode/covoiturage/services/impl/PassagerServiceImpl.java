@@ -2,18 +2,37 @@ package ma.youcode.covoiturage.services.impl;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequest;
 import ma.youcode.covoiturage.dtos.responses.PassagerResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
+import ma.youcode.covoiturage.entities.Passager;
+import ma.youcode.covoiturage.exceptions.ConflictException;
+import ma.youcode.covoiturage.mappers.PassagerMapper;
+import ma.youcode.covoiturage.repositories.PassagerRepository;
 import ma.youcode.covoiturage.services.PassagerService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PassagerServiceImpl implements PassagerService {
+
+    private final PassagerRepository passagerRepository;
+    private final PassagerMapper passagerMapper;
 
     @Override
     public PassagerResponse create(PassagerRequest request) {
-        return null;
+        if (passagerRepository.existsByEmail(request.getEmail())) {
+            throw new ConflictException("L'email doit être unique.");
+        }
+
+        if (passagerRepository.existsByTelephone(request.getTelephone())) {
+            throw new ConflictException("Le téléphone doit être unique.");
+        }
+
+        Passager passager = passagerMapper.toEntity(request);
+        Passager savedPassager = passagerRepository.save(passager);
+        return passagerMapper.toResponse(savedPassager);
     }
 
     @Override

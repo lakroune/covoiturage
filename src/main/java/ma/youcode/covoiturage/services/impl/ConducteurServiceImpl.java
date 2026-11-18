@@ -46,4 +46,14 @@ public class ConducteurServiceImpl implements ConducteurService {
         return null;
     }
 
+    @Override
+    public List<ConducteurResponse> searchByEmail(String email) {
+        return List.of();
+    }
+
+    @Override
+    public List<ConducteurResponse> serachByNom(String nom) {
+        return List.of();
+    }
+
 }

@@ -39,10 +39,6 @@ public class VehiculeServiceImpl implements VehiculeService {
         return vehiculeMapper.toResponse(vehiculeRepository.save(vehicule));
     }
 
-
-
-
-    
     @Override
     public VehiculeResponse findById(Long id) {
         Vehicule vehicule = vehiculeRepository.findById(id)
@@ -70,6 +66,15 @@ public class VehiculeServiceImpl implements VehiculeService {
 
     @Override
     public void delete(Long id) {
-        // La suppression doit vérifier l'absence de trajet associé.
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Véhicule introuvable avec l'identifiant : " + id));
+
+        if (!vehicule.getTrajets().isEmpty()) {
+            throw new ConflictException(
+                    "Impossible de supprimer le véhicule car il est associé à un trajet.");
+        }
+
+        vehiculeRepository.delete(vehicule);
     }
 }

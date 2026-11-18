@@ -115,7 +115,9 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public List<ConducteurResponse> serachByNom(String nom) {
-        return List.of();
+        return conducteurRepository.findByNomContainingIgnoreCase(nom).stream()
+                .map(conducteurMapper::toResponse)
+                .toList();
     }
 
 }

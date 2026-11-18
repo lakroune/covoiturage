@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Conducteur extends Utilisateur {
 
+    @Column(nullable = false, unique = true)
     private String numeroPermis;
 
     @OneToMany(mappedBy = "conducteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

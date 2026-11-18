@@ -2,19 +2,38 @@ package ma.youcode.covoiturage.services.impl;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
+import ma.youcode.covoiturage.entities.Conducteur;
+import ma.youcode.covoiturage.exceptions.ConflictException;
+import ma.youcode.covoiturage.mappers.ConducteurMapper;
+import ma.youcode.covoiturage.repositories.ConducteurRepository;
 import ma.youcode.covoiturage.services.ConducteurService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ConducteurServiceImpl implements ConducteurService {
+
+    private final ConducteurRepository conducteurRepository;
+    private final ConducteurMapper conducteurMapper;
 
     @Override
     public ConducteurResponse create(ConducteurRequest request) {
-        return null;
+        if (conducteurRepository.existsByEmail(request.getEmail())) {
+            throw new ConflictException("L'email doit être unique.");
+        }
+
+        if (conducteurRepository.existsByNumeroPermis(request.getNumeroPermis())) {
+            throw new ConflictException("Le numéro de permis doit être unique.");
+        }
+
+        Conducteur conducteur = conducteurMapper.toEntity(request);
+        Conducteur savedConducteur = conducteurRepository.save(conducteur);
+        return conducteurMapper.toResponse(savedConducteur);
     }
 
     @Override

@@ -39,9 +39,17 @@ public class VehiculeServiceImpl implements VehiculeService {
         return vehiculeMapper.toResponse(vehiculeRepository.save(vehicule));
     }
 
+
+
+
+    
     @Override
     public VehiculeResponse findById(Long id) {
-        return null;
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Véhicule introuvable avec l'identifiant : " + id));
+
+        return vehiculeMapper.toResponse(vehicule);
     }
 
     @Override

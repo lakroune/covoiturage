@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequest;
+import ma.youcode.covoiturage.dtos.requests.PassagerRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.PassagerResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
 import ma.youcode.covoiturage.services.PassagerService;
@@ -43,7 +44,7 @@ public class PassagerController {
 
     @PutMapping("/{id}")
     public PassagerResponse update(
-            @PathVariable Long id, @Valid @RequestBody PassagerRequest request) {
+            @PathVariable Long id, @Valid @RequestBody PassagerRequestUpdate request) {
         return passagerService.update(id, request);
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequest;
+import ma.youcode.covoiturage.dtos.requests.PassagerRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.PassagerResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
 import ma.youcode.covoiturage.entities.Passager;
@@ -53,8 +54,18 @@ public class PassagerServiceImpl implements PassagerService {
     }
 
     @Override
-    public PassagerResponse update(Long id, PassagerRequest request) {
-        return null;
+    public PassagerResponse update(Long id, PassagerRequestUpdate request) {
+        Passager passager = passagerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Passager introuvable avec l'identifiant : " + id));
+
+        if (passagerRepository.existsByTelephoneAndIdNot(request.getTelephone(), id)) {
+            throw new ConflictException("Le téléphone doit être unique.");
+        }
+
+        passagerMapper.updateEntity(request, passager);
+
+        return passagerMapper.toResponse(passagerRepository.save(passager));
     }
 
     @Override

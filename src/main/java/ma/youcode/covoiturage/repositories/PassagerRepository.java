@@ -8,4 +8,6 @@ public interface PassagerRepository extends JpaRepository<Passager, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByTelephone(String telephone);
+
+    boolean existsByTelephoneAndIdNot(String telephone, Long id);
 }

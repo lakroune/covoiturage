@@ -54,7 +54,13 @@ public class VehiculeServiceImpl implements VehiculeService {
 
     @Override
     public List<VehiculeResponse> findByConducteurId(Long conducteurId) {
-        return List.of();
+        conducteurRepository.findById(conducteurId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + conducteurId));
+
+        return vehiculeRepository.findByConducteurId(conducteurId).stream()
+                .map(vehiculeMapper::toResponse)
+                .toList();
     }
 
     @Override

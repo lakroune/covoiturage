@@ -12,7 +12,9 @@ import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.exceptions.ConflictException;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.ConducteurMapper;
+import ma.youcode.covoiturage.mappers.VehiculeMapper;
 import ma.youcode.covoiturage.repositories.ConducteurRepository;
+import ma.youcode.covoiturage.repositories.VehiculeRepository;
 import ma.youcode.covoiturage.services.ConducteurService;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     private final ConducteurRepository conducteurRepository;
     private final ConducteurMapper conducteurMapper;
+    private final VehiculeRepository vehiculeRepository;
+    private final VehiculeMapper vehiculeMapper;
 
     @Override
     public ConducteurResponse create(ConducteurRequest request) {
@@ -78,7 +82,13 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public List<VehiculeResponse> findVehiculesByConducteur(Long id) {
-        return null;
+        conducteurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + id));
+
+        return vehiculeRepository.findByConducteurId(id).stream()
+                .map(vehiculeMapper::toResponse)
+                .toList();
     }
 
     @Override

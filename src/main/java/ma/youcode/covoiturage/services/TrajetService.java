@@ -1,5 +1,7 @@
 package ma.youcode.covoiturage.services;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
@@ -19,7 +21,14 @@ public interface TrajetService {
 
     List<ReservationResponse> findReservations(Long id);
 
-    List<TrajetResponse> search();
+    List<TrajetResponse> search(
+            String villeDepart,
+            String villeArrivee,
+            LocalDate date,
+            Integer nombrePlaces,
+            BigDecimal prixMax,
+            int page,
+            int size);
 
     TrajetResponse terminer(Long id);
 

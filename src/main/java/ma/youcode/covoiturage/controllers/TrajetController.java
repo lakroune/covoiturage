@@ -1,5 +1,7 @@
 package ma.youcode.covoiturage.controllers;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -53,8 +55,16 @@ public class TrajetController {
     }
 
     @GetMapping("/recherche")
-    public List<TrajetResponse> search() {
-        return trajetService.search();
+    public List<TrajetResponse> search(
+            @RequestParam String villeDepart,
+            @RequestParam String villeArrivee,
+            @RequestParam LocalDate date,
+            @RequestParam Integer nombrePlaces,
+            @RequestParam BigDecimal prixMax,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return trajetService.search(
+                villeDepart, villeArrivee, date, nombrePlaces, prixMax, page, size);
     }
 
     @PatchMapping("/{id}/terminer")

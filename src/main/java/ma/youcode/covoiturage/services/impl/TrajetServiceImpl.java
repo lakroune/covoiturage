@@ -1,5 +1,7 @@
 package ma.youcode.covoiturage.services.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
@@ -38,7 +40,14 @@ public class TrajetServiceImpl implements TrajetService {
     }
 
     @Override
-    public List<TrajetResponse> search() {
+    public List<TrajetResponse> search(
+            String villeDepart,
+            String villeArrivee,
+            LocalDate date,
+            Integer nombrePlaces,
+            BigDecimal prixMax,
+            int page,
+            int size) {
         return List.of();
     }
 

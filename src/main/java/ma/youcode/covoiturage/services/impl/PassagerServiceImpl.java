@@ -8,6 +8,7 @@ import ma.youcode.covoiturage.dtos.responses.PassagerResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
 import ma.youcode.covoiturage.entities.Passager;
 import ma.youcode.covoiturage.exceptions.ConflictException;
+import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.PassagerMapper;
 import ma.youcode.covoiturage.repositories.PassagerRepository;
 import ma.youcode.covoiturage.services.PassagerService;
@@ -37,12 +38,18 @@ public class PassagerServiceImpl implements PassagerService {
 
     @Override
     public List<PassagerResponse> findAll() {
-        return null;
+        return passagerRepository.findAll().stream()
+                .map(passagerMapper::toResponse)
+                .toList();
     }
 
     @Override
     public PassagerResponse findById(Long id) {
-        return null;
+        Passager passager = passagerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Passager introuvable avec l'identifiant : " + id));
+
+        return passagerMapper.toResponse(passager);
     }
 
     @Override

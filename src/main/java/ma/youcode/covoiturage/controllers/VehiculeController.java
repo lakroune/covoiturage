@@ -2,6 +2,7 @@ package ma.youcode.covoiturage.controllers;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/vehicules")
+@Tag(name = "Vehicule", description = "API pour gérer les véhicules")
 public class VehiculeController {
 
     private final VehiculeService vehiculeService;

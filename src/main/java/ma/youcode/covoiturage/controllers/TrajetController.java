@@ -1,9 +1,69 @@
 package ma.youcode.covoiturage.controllers;
 
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
+import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
+import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
+import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
+import ma.youcode.covoiturage.services.TrajetService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
-@RequestMapping("/api/trajets")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/trajets")
+@Tag (name = "Trajet", description = "API pour gérer les trajets")
 public class TrajetController {
+
+    private final TrajetService trajetService;
+
+    @PostMapping
+    public TrajetResponse create(@RequestBody TrajetRequest request) {
+        return trajetService.create(request);
+    }
+
+    @GetMapping("/{id}")
+    public TrajetResponse findById(@PathVariable Long id) {
+        return trajetService.findById(id);
+    }
+
+    @GetMapping(params = "conducteurId")
+    public List<TrajetResponse> findByConducteurId(@RequestParam Long conducteurId) {
+        return trajetService.findByConducteurId(conducteurId);
+    }
+
+    @GetMapping("/{id}/points-arret")
+    public List<PointArretResponse> findPointsArret(@PathVariable Long id) {
+        return trajetService.findPointsArret(id);
+    }
+
+    @GetMapping("/{id}/reservations")
+    public List<ReservationResponse> findReservations(@PathVariable Long id) {
+        return trajetService.findReservations(id);
+    }
+
+    @GetMapping("/recherche")
+    public List<TrajetResponse> search() {
+        return trajetService.search();
+    }
+
+    @PatchMapping("/{id}/terminer")
+    public TrajetResponse terminer(@PathVariable Long id) {
+        return trajetService.terminer(id);
+    }
+
+    @PatchMapping("/{id}/annuler")
+    public TrajetResponse annuler(@PathVariable Long id) {
+        return trajetService.annuler(id);
+    }
 }

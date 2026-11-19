@@ -15,6 +15,7 @@ import ma.youcode.covoiturage.enums.StatutTrajet;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.TrajetMapper;
 import ma.youcode.covoiturage.mappers.PointArretMapper;
+import ma.youcode.covoiturage.mappers.ReservationMapper;
 import ma.youcode.covoiturage.repositories.PointArretRepository;
 import ma.youcode.covoiturage.repositories.TrajetRepository;
 import ma.youcode.covoiturage.repositories.VehiculeRepository;
@@ -30,6 +31,7 @@ public class TrajetServiceImpl implements TrajetService {
     private final VehiculeRepository vehiculeRepository;
     private final TrajetMapper trajetMapper;
     private final PointArretMapper pointArretMapper;
+    private final ReservationMapper reservationMapper;
 
     @Override
     public TrajetResponse create(TrajetRequest request) {
@@ -73,7 +75,13 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public List<ReservationResponse> findReservations(Long id) {
-        return List.of();
+        Trajet trajet = trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'identifiant : " + id));
+
+        return trajet.getReservations().stream()
+                .map(reservationMapper::toResponse)
+                .toList();
     }
 
     @Override

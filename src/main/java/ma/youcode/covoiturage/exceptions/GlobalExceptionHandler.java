@@ -29,11 +29,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorMessage> handleBusinessException(
             BusinessException exception, HttpServletRequest request) {
         return buildErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST, request);
     }
+    
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorMessage> handleConflictException(

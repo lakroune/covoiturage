@@ -268,6 +268,15 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
 
+        if (trajet.getStatut() == StatutTrajet.ANNULE) {
+            throw new ConflictException("Le trajet est déjà annulé");
+        }
+
+        if (trajet.getStatut() != StatutTrajet.PUBLIE) {
+            throw new ConflictException(
+                    "Seul un trajet publié peut être annulé");
+        }
+
         trajet.setStatut(StatutTrajet.ANNULE);
         trajet.getReservations().forEach(
                 reservation -> reservation.setStatut(StatutReservation.ANNULEE));

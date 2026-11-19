@@ -14,6 +14,8 @@ import ma.youcode.covoiturage.entities.Vehicule;
 import ma.youcode.covoiturage.enums.StatutTrajet;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.TrajetMapper;
+import ma.youcode.covoiturage.mappers.PointArretMapper;
+import ma.youcode.covoiturage.repositories.PointArretRepository;
 import ma.youcode.covoiturage.repositories.TrajetRepository;
 import ma.youcode.covoiturage.repositories.VehiculeRepository;
 import ma.youcode.covoiturage.services.TrajetService;
@@ -24,8 +26,10 @@ import org.springframework.stereotype.Service;
 public class TrajetServiceImpl implements TrajetService {
 
     private final TrajetRepository trajetRepository;
+    private final PointArretRepository pointArretRepository;
     private final VehiculeRepository vehiculeRepository;
     private final TrajetMapper trajetMapper;
+    private final PointArretMapper pointArretMapper;
 
     @Override
     public TrajetResponse create(TrajetRequest request) {
@@ -58,7 +62,13 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public List<PointArretResponse> findPointsArret(Long id) {
-        return List.of();
+        trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'identifiant : " + id));
+
+        return pointArretRepository.findByTrajetIdOrderByOrdreAsc(id).stream()
+                .map(pointArretMapper::toResponse)
+                .toList();
     }
 
     @Override

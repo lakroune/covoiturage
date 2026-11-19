@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -86,6 +85,15 @@ public class TrajetServiceImpl implements TrajetService {
     private List<PointArretRequest> validateAndSortPoints(List<PointArretRequest> pointsRequest) {
         if (pointsRequest == null || pointsRequest.size() < 2) {
             throw new BusinessException("Un trajet doit contenir au moins deux points d'arret");
+        }
+
+        Set<String> villes = new HashSet<>();
+        for (PointArretRequest pointRequest : pointsRequest) {
+            if (pointRequest.getVille() == null
+                    || !villes.add(pointRequest.getVille().trim().toLowerCase())) {
+                throw new BusinessException(
+                        "Une ville ne peut apparaître qu'une seule fois sur le parcours");
+            }
         }
 
         List<PointArretRequest> pointsTries = pointsRequest.stream()
@@ -202,9 +210,6 @@ public class TrajetServiceImpl implements TrajetService {
         List<PointArret> points = trajet.getPointsArret().stream()
                 .sorted(Comparator.comparing(PointArret::getOrdre))
                 .toList();
-
-        Map<Long, PointArret> pointsById = points.stream()
-                .collect(Collectors.toMap(PointArret::getId, Function.identity()));
 
         for (PointArret depart : points) {
             if (!depart.getVille().equalsIgnoreCase(villeDepart)) {

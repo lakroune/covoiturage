@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class TrajetRequest {
     private Long vehiculeId;
 
     @NotNull(message = "Le nombre de places est obligatoire")
+    @Min(value = 1, message = "Le nombre de places doit être au minimum de 1")
     @Positive(message = "Le nombre de places doit être positif")
     private Integer placesProposees;
 

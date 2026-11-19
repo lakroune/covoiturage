@@ -45,6 +45,12 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Vehicule introuvable avec l'identifiant : " + request.getVehiculeId()));
 
+        if (request.getPlacesProposees() > vehicule.getCapacite()) {
+            throw new BusinessException(
+                    "Le nombre de places proposées ne peut pas dépasser la capacité du véhicule : "
+                            + vehicule.getCapacite());
+        }
+
         Trajet trajet = trajetMapper.toEntity(request);
         trajet.setVehicule(vehicule);
         trajet.setStatut(StatutTrajet.PUBLIE);

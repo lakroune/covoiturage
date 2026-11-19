@@ -116,7 +116,11 @@ public class ReservationServiceImpl implements ReservationService {
     
     @Override
     public ReservationResponse findById(Long id) {
-        return null;
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Reservation introuvable avec l'identifiant : " + id));
+
+        return reservationMapper.toResponse(reservation);
     }
 
     @Override

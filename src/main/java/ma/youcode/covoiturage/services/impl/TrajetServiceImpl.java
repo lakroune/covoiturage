@@ -102,7 +102,7 @@ public class TrajetServiceImpl implements TrajetService {
             if (index > 0) {
                 PointArretRequest precedent = pointsTries.get(index - 1);
                 if (!point.getHeurePassage().isAfter(precedent.getHeurePassage())) {
-                    throw new BusinessException("Les heures de passage doivent etre croissantes de point arret ");
+                    throw new BusinessException("Les heures de passage doivent etre croissantes de point arret "+point.getVille());
                 }
                 if (point.getPrixDepuisDepart().compareTo(precedent.getPrixDepuisDepart()) <= 0) {
                     throw new BusinessException("Les prix depuis le depart doivent etre croissants");

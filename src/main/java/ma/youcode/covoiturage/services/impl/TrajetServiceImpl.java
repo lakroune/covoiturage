@@ -51,7 +51,9 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public List<TrajetResponse> findByConducteurId(Long conducteurId) {
-        return List.of();
+        return trajetRepository.findByVehiculeConducteurId(conducteurId).stream()
+                .map(trajetMapper::toResponse)
+                .toList();
     }
 
     @Override

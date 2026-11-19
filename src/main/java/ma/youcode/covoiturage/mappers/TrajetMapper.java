@@ -11,7 +11,6 @@ public interface TrajetMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "statut", ignore = true)
-    @Mapping(target = "conducteur", ignore = true)
     @Mapping(target = "vehicule", ignore = true)
     @Mapping(target = "pointsArret", ignore = true)
     @Mapping(target = "reservations", ignore = true)

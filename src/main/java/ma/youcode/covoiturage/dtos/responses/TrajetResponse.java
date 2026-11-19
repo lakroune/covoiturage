@@ -14,8 +14,6 @@ import ma.youcode.covoiturage.enums.StatutTrajet;
 public class TrajetResponse {
 
     private Long id;
-    private String villeDepart;
-    private String villeArrivee;
     private LocalDateTime dateDepart;
     private Integer placesProposees;
     private StatutTrajet statut;

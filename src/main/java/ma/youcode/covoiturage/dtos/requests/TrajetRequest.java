@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,5 +24,6 @@ public class TrajetRequest {
     private Integer placesProposees;
 
     @NotEmpty(message = "Les points d'arrêt sont obligatoires")
+    @Size(min = 2, message = "Un trajet doit contenir au moins deux points d'arrêt")
     private List<@Valid PointArretRequest> pointsArret;
 }

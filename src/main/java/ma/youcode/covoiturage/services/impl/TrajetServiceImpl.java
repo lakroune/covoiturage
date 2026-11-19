@@ -2,21 +2,29 @@ package ma.youcode.covoiturage.services.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import ma.youcode.covoiturage.dtos.requests.PointArretRequest;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
+import ma.youcode.covoiturage.entities.Conducteur;
+import ma.youcode.covoiturage.entities.PointArret;
 import ma.youcode.covoiturage.entities.Trajet;
 import ma.youcode.covoiturage.entities.Vehicule;
 import ma.youcode.covoiturage.enums.StatutTrajet;
 import ma.youcode.covoiturage.enums.StatutReservation;
+import ma.youcode.covoiturage.exceptions.BusinessException;
+import ma.youcode.covoiturage.exceptions.ConflictException;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.TrajetMapper;
 import ma.youcode.covoiturage.mappers.PointArretMapper;
 import ma.youcode.covoiturage.mappers.ReservationMapper;
+import ma.youcode.covoiturage.repositories.ConducteurRepository;
 import ma.youcode.covoiturage.repositories.PointArretRepository;
 import ma.youcode.covoiturage.repositories.TrajetRepository;
 import ma.youcode.covoiturage.repositories.VehiculeRepository;
@@ -28,6 +36,7 @@ import org.springframework.stereotype.Service;
 public class TrajetServiceImpl implements TrajetService {
 
     private final TrajetRepository trajetRepository;
+    private final ConducteurRepository conducteurRepository;
     private final PointArretRepository pointArretRepository;
     private final VehiculeRepository vehiculeRepository;
     private final TrajetMapper trajetMapper;
@@ -36,17 +45,41 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public TrajetResponse create(TrajetRequest request) {
+        Conducteur conducteur = conducteurRepository.findById(request.getConducteurId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Conducteur introuvable avec l'identifiant : " + request.getConducteurId()));
+
         Vehicule vehicule = vehiculeRepository.findById(request.getVehiculeId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Vehicule introuvable avec l'identifiant : " + request.getVehiculeId()));
+
+        if (!vehicule.getConducteur().getId().equals(conducteur.getId())) {
+            throw new ConflictException("Le véhicule doit appartenir au conducteur.");
+        }
 
         Trajet trajet = trajetMapper.toEntity(request);
         trajet.setVehicule(vehicule);
         trajet.setStatut(StatutTrajet.PUBLIE);
 
+        List<PointArret> pointsArret = new ArrayList<>();
+        for (PointArretRequest pointRequest : request.getPointsArret()) {
+            PointArret pointArret = new PointArret();
+            pointArret.setVille(pointRequest.getVille());
+            pointArret.setOrdre(pointRequest.getOrdre());
+            pointArret.setHeurePassage(pointRequest.getHeurePassage());
+            pointArret.setPrixDepuisDepart(pointRequest.getPrixDepuisDepart());
+            pointArret.setTrajet(trajet);
+            pointsArret.add(pointArret);
+        }
+        trajet.setDateDepart(pointsArret.stream()
+                .min(Comparator.comparing(PointArret::getOrdre))
+                .orElseThrow(() -> new BusinessException("Au moins un point d'arrêt est requis"))
+                .getHeurePassage());
+        trajet.setPointsArret(pointsArret);
+
         return trajetMapper.toResponse(trajetRepository.save(trajet));
     }
-
+  
     @Override
     public TrajetResponse findById(Long id) {
         Trajet trajet = trajetRepository.findById(id)

@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface TrajetMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateDepart", ignore = true)
     @Mapping(target = "statut", ignore = true)
     @Mapping(target = "vehicule", ignore = true)
     @Mapping(target = "pointsArret", ignore = true)

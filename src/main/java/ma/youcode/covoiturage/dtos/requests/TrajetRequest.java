@@ -1,8 +1,9 @@
 package ma.youcode.covoiturage.dtos.requests;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.validation.constraints.Future;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -14,14 +15,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TrajetRequest {
 
-    @NotNull(message = "La date de départ est obligatoire")
-    @Future(message = "La date de départ doit être future")
-    private LocalDateTime dateDepart;
+    @NotNull(message = "Le conducteur est obligatoire")
+    private Long conducteurId;
+
+    @NotNull(message = "Le véhicule est obligatoire")
+    private Long vehiculeId;
 
     @NotNull(message = "Le nombre de places est obligatoire")
     @Positive(message = "Le nombre de places doit être positif")
     private Integer placesProposees;
 
-    @NotNull(message = "Le véhicule est obligatoire")
-    private Long vehiculeId;
+    @NotEmpty(message = "Les points d'arrêt sont obligatoires")
+    private List<@Valid PointArretRequest> pointsArret;
 }

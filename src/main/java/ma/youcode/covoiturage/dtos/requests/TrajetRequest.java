@@ -28,10 +28,7 @@ public class TrajetRequest {
     @NotNull(message = "Le nombre de places est obligatoire")
     @Positive(message = "Le nombre de places doit être positif")
     private Integer placesProposees;
-
-    @NotNull(message = "Le conducteur est obligatoire")
-    private Long conducteurId;
-
+    
     @NotNull(message = "Le véhicule est obligatoire")
     private Long vehiculeId;
 }

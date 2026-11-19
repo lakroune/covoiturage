@@ -17,7 +17,6 @@ public interface TrajetMapper {
     @Mapping(target = "reservations", ignore = true)
     Trajet toEntity(TrajetRequest request);
 
-    @Mapping(target = "conducteurId", source = "conducteur.id")
     @Mapping(target = "vehiculeId", source = "vehicule.id")
     TrajetResponse toResponse(Trajet trajet);
 }

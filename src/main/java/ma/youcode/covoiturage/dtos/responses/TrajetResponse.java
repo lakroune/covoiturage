@@ -19,7 +19,6 @@ public class TrajetResponse {
     private LocalDateTime dateDepart;
     private Integer placesProposees;
     private StatutTrajet statut;
-    private Long conducteurId;
     private Long vehiculeId;
     private List<PointArretResponse> pointsArret;
 }

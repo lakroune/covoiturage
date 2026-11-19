@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TrajetRepository extends JpaRepository<Trajet, Long> {
 
-    List<Trajet> findByConducteurId(Long conducteurId);
+    List<Trajet> findByVehiculeConducteurId(Long conducteurId);
 }

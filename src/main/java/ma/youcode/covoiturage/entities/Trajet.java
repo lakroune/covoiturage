@@ -41,10 +41,7 @@ public class Trajet {
     @Enumerated(EnumType.STRING)
     private StatutTrajet statut;
 
-    @ManyToOne
-    @JoinColumn(name = "conducteur_id", nullable = false)
-    private Conducteur conducteur;
-
+   
     @ManyToOne
     @JoinColumn(name = "vehicule_id", nullable = false)
     private Vehicule vehicule;

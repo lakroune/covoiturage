@@ -3,6 +3,7 @@ package ma.youcode.covoiturage.services;
 import java.util.List;
 
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
+import ma.youcode.covoiturage.dtos.requests.VehiculeRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 
 public interface VehiculeService {
@@ -13,7 +14,7 @@ public interface VehiculeService {
 
     List<VehiculeResponse> findByConducteurId(Long conducteurId);
 
-    VehiculeResponse update(Long id, VehiculeRequest request);
+    VehiculeResponse update(Long id, VehiculeRequestUpdate request);
 
     void delete(Long id);
 }

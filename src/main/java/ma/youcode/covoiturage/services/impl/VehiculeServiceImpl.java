@@ -3,6 +3,7 @@ package ma.youcode.covoiturage.services.impl;
 import java.util.List;
 
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
+import ma.youcode.covoiturage.dtos.requests.VehiculeRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.entities.Vehicule;
@@ -60,8 +61,23 @@ public class VehiculeServiceImpl implements VehiculeService {
     }
 
     @Override
-    public VehiculeResponse update(Long id, VehiculeRequest request) {
-        return null;
+    public VehiculeResponse update(Long id, VehiculeRequestUpdate request) {
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Véhicule introuvable avec l'identifiant : " + id));
+
+        if (vehiculeRepository.existsByImmatriculationAndIdNot(
+                request.getImmatriculation(), id)) {
+            throw new ConflictException("L'immatriculation doit être unique.");
+        }
+
+        vehicule.setMarque(request.getMarque());
+        vehicule.setModele(request.getModele());
+        vehicule.setImmatriculation(request.getImmatriculation());
+        vehicule.setCouleur(request.getCouleur());
+        vehicule.setCapacite(request.getCapacite());
+
+        return vehiculeMapper.toResponse(vehiculeRepository.save(vehicule));
     }
 
     @Override

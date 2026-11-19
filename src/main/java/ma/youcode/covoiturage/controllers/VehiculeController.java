@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
+import ma.youcode.covoiturage.dtos.requests.VehiculeRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.services.VehiculeService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +44,7 @@ public class VehiculeController {
 
     @PutMapping("/{id}")
     public VehiculeResponse update(
-            @PathVariable Long id, @Valid @RequestBody VehiculeRequest request) {
+            @PathVariable Long id, @Valid @RequestBody VehiculeRequestUpdate request) {
         return vehiculeService.update(id, request);
     }
 

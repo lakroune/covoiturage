@@ -146,6 +146,12 @@ public class ReservationServiceImpl implements ReservationService {
             throw new ConflictException("La reservation est déjà annulée");
         }
 
+        LocalDateTime dateLimiteAnnulation = reservation.getTrajet().getDateDepart().minusHours(24);
+        if (LocalDateTime.now().isAfter(dateLimiteAnnulation)) {
+            throw new ConflictException(
+                    "Une réservation ne peut être annulée que jusqu'à 24 heures avant le départ.");
+        }
+
         reservation.setStatut(StatutReservation.ANNULEE);
         return reservationMapper.toResponse(reservationRepository.save(reservation));
     }

@@ -98,7 +98,12 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public TrajetResponse terminer(Long id) {
-        return null;
+        Trajet trajet = trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'identifiant : " + id));
+
+        trajet.setStatut(StatutTrajet.TERMINE);
+        return trajetMapper.toResponse(trajetRepository.save(trajet));
     }
 
     @Override

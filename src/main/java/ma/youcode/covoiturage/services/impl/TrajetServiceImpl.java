@@ -223,8 +223,8 @@ public class TrajetServiceImpl implements TrajetService {
                 int placesReservees = trajet.getReservations().stream()
                         .filter(reservation -> reservation.getStatut() == StatutReservation.CONFIRMEE)
                         .filter(reservation -> {
-                            PointArret reservationDepart = pointsById.get(reservation.getPointMonteeId());
-                            PointArret reservationArrivee = pointsById.get(reservation.getPointDescenteId());
+                            PointArret reservationDepart = reservation.getPointMontee();
+                            PointArret reservationArrivee = reservation.getPointDescente();
                             return reservationDepart != null
                                     && reservationArrivee != null
                                     && reservationDepart.getOrdre() < arrivee.getOrdre()

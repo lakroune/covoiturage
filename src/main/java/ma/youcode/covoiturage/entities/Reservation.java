@@ -29,11 +29,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "point_montee_id", nullable = false)
-    private Long pointMonteeId;
+    @ManyToOne
+    @JoinColumn(name = "point_montee_id", nullable = false)
+    private PointArret pointMontee;
 
-    @Column(name = "point_descente_id", nullable = false)
-    private Long pointDescenteId;
+    @ManyToOne
+    @JoinColumn(name = "point_descente_id", nullable = false)
+    private PointArret pointDescente;
 
     @Column(nullable = false)
     private Integer nombrePlaces;

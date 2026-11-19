@@ -86,6 +86,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .subtract(pointMontee.getPrixDepuisDepart());
 
         Reservation reservation = reservationMapper.toEntity(request);
+        reservation.setPointMontee(pointMontee);
+        reservation.setPointDescente(pointDescente);
         reservation.setPassager(passager);
         reservation.setTrajet(trajet);
         reservation.setMontantTotal(
@@ -104,8 +106,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private boolean reservationChevauche(
             Reservation reservation, int ordreMontee, int ordreDescente) {
-        PointArret reservationMontee = findPoint(reservation.getPointMonteeId());
-        PointArret reservationDescente = findPoint(reservation.getPointDescenteId());
+        PointArret reservationMontee = reservation.getPointMontee();
+        PointArret reservationDescente = reservation.getPointDescente();
 
         return reservationMontee.getOrdre() < ordreDescente
                 && reservationDescente.getOrdre() > ordreMontee;

@@ -136,6 +136,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse annuler(Long id) {
-        return null;
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Reservation introuvable avec l'identifiant : " + id));
+
+        if (reservation.getStatut() == StatutReservation.ANNULEE) {
+            throw new ConflictException("La reservation est déjà annulée");
+        }
+
+        reservation.setStatut(StatutReservation.ANNULEE);
+        return reservationMapper.toResponse(reservationRepository.save(reservation));
     }
 }

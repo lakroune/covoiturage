@@ -5,8 +5,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ma.youcode.covoiturage.dtos.requests.PointArretRequest;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
@@ -152,15 +158,88 @@ public class TrajetServiceImpl implements TrajetService {
     }
 
     @Override
-    public List<TrajetResponse> search(
+    public Page<TrajetResponse> search(
             String villeDepart,
             String villeArrivee,
             LocalDate date,
             Integer nombrePlaces,
             BigDecimal prixMax,
-            int page,
-            int size) {
-        return List.of();
+            Pageable pageable) {
+        if (pageable.isPaged() && pageable.getPageSize() <= 0) {
+            throw new BusinessException("La page doit être positive et la taille doit être supérieure à 0");
+        }
+
+        List<TrajetResponse> resultats = trajetRepository.findAll().stream()
+                .filter(trajet -> trajet.getStatut() == StatutTrajet.PUBLIE)
+                .filter(trajet -> trajet.getDateDepart().toLocalDate().equals(date))
+                .filter(trajet -> hasAvailableSegment(
+                        trajet, villeDepart, villeArrivee, nombrePlaces, prixMax))
+                .map(trajetMapper::toResponse)
+                .toList();
+
+        if (pageable.isUnpaged()) {
+            return new PageImpl<>(resultats);
+        }
+
+        long debut = pageable.getOffset();
+        if (debut >= resultats.size()) {
+            return new PageImpl<>(List.of(), pageable, resultats.size());
+        }
+
+        int fin = (int) Math.min(debut + pageable.getPageSize(), resultats.size());
+        return new PageImpl<>(resultats.subList((int) debut, fin), pageable, resultats.size());
+    }
+
+    private boolean hasAvailableSegment(
+            Trajet trajet,
+            String villeDepart,
+            String villeArrivee,
+            Integer nombrePlaces,
+            BigDecimal prixMax) {
+
+                
+        List<PointArret> points = trajet.getPointsArret().stream()
+                .sorted(Comparator.comparing(PointArret::getOrdre))
+                .toList();
+
+        Map<Long, PointArret> pointsById = points.stream()
+                .collect(Collectors.toMap(PointArret::getId, Function.identity()));
+
+        for (PointArret depart : points) {
+            if (!depart.getVille().equalsIgnoreCase(villeDepart)) {
+                continue;
+            }
+
+            for (PointArret arrivee : points) {
+                if (!arrivee.getVille().equalsIgnoreCase(villeArrivee)
+                        || depart.getOrdre() >= arrivee.getOrdre()) {
+                    continue;
+                }
+
+                BigDecimal prixSegment = arrivee.getPrixDepuisDepart()
+                        .subtract(depart.getPrixDepuisDepart());
+
+                int placesReservees = trajet.getReservations().stream()
+                        .filter(reservation -> reservation.getStatut() == StatutReservation.CONFIRMEE)
+                        .filter(reservation -> {
+                            PointArret reservationDepart = pointsById.get(reservation.getPointMonteeId());
+                            PointArret reservationArrivee = pointsById.get(reservation.getPointDescenteId());
+                            return reservationDepart != null
+                                    && reservationArrivee != null
+                                    && reservationDepart.getOrdre() < arrivee.getOrdre()
+                                    && reservationArrivee.getOrdre() > depart.getOrdre();
+                        })
+                        .mapToInt(reservation -> reservation.getNombrePlaces())
+                        .sum();
+
+                int placesDisponibles = trajet.getPlacesProposees() - placesReservees;
+                if (placesDisponibles >= nombrePlaces && prixSegment.compareTo(prixMax) <= 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override

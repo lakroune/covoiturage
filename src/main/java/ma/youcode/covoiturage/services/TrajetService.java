@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
@@ -21,14 +24,13 @@ public interface TrajetService {
 
     List<ReservationResponse> findReservations(Long id);
 
-    List<TrajetResponse> search(
+    Page<TrajetResponse> search(
             String villeDepart,
             String villeArrivee,
             LocalDate date,
             Integer nombrePlaces,
             BigDecimal prixMax,
-            int page,
-            int size);
+            Pageable pageable);
 
     TrajetResponse terminer(Long id);
 

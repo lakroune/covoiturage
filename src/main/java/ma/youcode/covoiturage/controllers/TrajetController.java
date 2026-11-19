@@ -6,6 +6,9 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
@@ -56,16 +59,15 @@ public class TrajetController {
     }
 
     @GetMapping("/recherche")
-    public List<TrajetResponse> search(
+    public Page<TrajetResponse> search(
             @RequestParam String villeDepart,
             @RequestParam String villeArrivee,
             @RequestParam LocalDate date,
             @RequestParam Integer nombrePlaces,
             @RequestParam BigDecimal prixMax,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @PageableDefault(size = 10) Pageable pageable) {
         return trajetService.search(
-                villeDepart, villeArrivee, date, nombrePlaces, prixMax, page, size);
+                villeDepart, villeArrivee, date, nombrePlaces, prixMax, pageable);
     }
 
     @PatchMapping("/{id}/terminer")

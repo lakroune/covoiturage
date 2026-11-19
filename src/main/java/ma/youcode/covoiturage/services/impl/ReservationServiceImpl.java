@@ -36,6 +36,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse create(ReservationRequest request) {
+
+        
         Passager passager = passagerRepository.findById(request.getPassagerId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'identifiant : " + request.getPassagerId()));
@@ -49,12 +51,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 
 
-        if (trajet.getStatut() == StatutTrajet.ANNULE
-                || trajet.getStatut() == StatutTrajet.TERMINE) {
+        if (trajet.getStatut() != StatutTrajet.PUBLIE) {
             throw new ConflictException("Ce trajet n'est plus disponible pour une réservation.");
         }
 
-        
+
         PointArret pointMontee = findPoint(request.getPointMonteeId());
         PointArret pointDescente = findPoint(request.getPointDescenteId());
 
@@ -110,6 +111,9 @@ public class ReservationServiceImpl implements ReservationService {
                 && reservationDescente.getOrdre() > ordreMontee;
     }
 
+
+
+    
     @Override
     public ReservationResponse findById(Long id) {
         return null;

@@ -101,7 +101,7 @@ public class ConducteurServiceImpl implements ConducteurService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + id));
 
-        return trajetRepository.findByConducteurId(id).stream()
+        return trajetRepository.findByVehiculeConducteurId(id).stream()
                 .map(trajetMapper::toResponse)
                 .toList();
     }

@@ -12,6 +12,7 @@ import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.entities.Trajet;
 import ma.youcode.covoiturage.entities.Vehicule;
 import ma.youcode.covoiturage.enums.StatutTrajet;
+import ma.youcode.covoiturage.enums.StatutReservation;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.TrajetMapper;
 import ma.youcode.covoiturage.mappers.PointArretMapper;
@@ -108,6 +109,14 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public TrajetResponse annuler(Long id) {
-        return null;
+        Trajet trajet = trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'identifiant : " + id));
+
+        trajet.setStatut(StatutTrajet.ANNULE);
+        trajet.getReservations().forEach(
+                reservation -> reservation.setStatut(StatutReservation.ANNULEE));
+
+        return trajetMapper.toResponse(trajetRepository.save(trajet));
     }
 }

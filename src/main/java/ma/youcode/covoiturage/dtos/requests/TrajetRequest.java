@@ -15,9 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TrajetRequest {
 
-    @NotNull(message = "Le conducteur est obligatoire")
-    private Long conducteurId;
-
     @NotNull(message = "Le véhicule est obligatoire")
     private Long vehiculeId;
 

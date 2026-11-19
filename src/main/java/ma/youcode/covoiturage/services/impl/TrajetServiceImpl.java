@@ -105,7 +105,7 @@ public class TrajetServiceImpl implements TrajetService {
                     throw new BusinessException("Les heures de passage doivent etre croissantes de point arret "+point.getVille());
                 }
                 if (point.getPrixDepuisDepart().compareTo(precedent.getPrixDepuisDepart()) <= 0) {
-                    throw new BusinessException("Les prix depuis le depart doivent etre croissants");
+                    throw new BusinessException("Les prix depuis le depart doivent etre croissants de point arret "+point.getVille());
                 }
             }
         }

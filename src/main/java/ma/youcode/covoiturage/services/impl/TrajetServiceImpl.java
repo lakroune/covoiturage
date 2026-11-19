@@ -51,12 +51,14 @@ public class TrajetServiceImpl implements TrajetService {
                             + vehicule.getCapacite());
         }
 
+        List<PointArretRequest> pointsRequest = validateAndSortPoints(request.getPointsArret());
+
         Trajet trajet = trajetMapper.toEntity(request);
         trajet.setVehicule(vehicule);
         trajet.setStatut(StatutTrajet.PUBLIE);
 
         List<PointArret> pointsArret = new ArrayList<>();
-        for (PointArretRequest pointRequest : request.getPointsArret()) {
+        for (PointArretRequest pointRequest : pointsRequest) {
             PointArret pointArret = new PointArret();
             pointArret.setVille(pointRequest.getVille());
             pointArret.setOrdre(pointRequest.getOrdre());
@@ -73,7 +75,44 @@ public class TrajetServiceImpl implements TrajetService {
 
         return trajetMapper.toResponse(trajetRepository.save(trajet));
     }
-  
+
+    private List<PointArretRequest> validateAndSortPoints(List<PointArretRequest> pointsRequest) {
+        if (pointsRequest == null || pointsRequest.size() < 2) {
+            throw new BusinessException("Un trajet doit contenir au moins deux points d'arret");
+        }
+
+        List<PointArretRequest> pointsTries = pointsRequest.stream()
+                .sorted(Comparator.comparing(PointArretRequest::getOrdre))
+                .toList();
+
+        if (pointsTries.get(0).getOrdre() != 0) {
+            throw new BusinessException("Le premier point d'arret doit avoir l'ordre 0");
+        }
+
+        if (pointsTries.get(0).getPrixDepuisDepart().compareTo(BigDecimal.ZERO) != 0) {
+            throw new BusinessException("Le prix du premier point doit etre egal a 0");
+        }
+
+        for (int index = 0; index < pointsTries.size(); index++) {
+            PointArretRequest point = pointsTries.get(index);
+            if (point.getOrdre() != index) {
+                throw new BusinessException("Les ordres des points d'arret doivent etre consecutifs");
+            }
+
+            if (index > 0) {
+                PointArretRequest precedent = pointsTries.get(index - 1);
+                if (!point.getHeurePassage().isAfter(precedent.getHeurePassage())) {
+                    throw new BusinessException("Les heures de passage doivent etre croissantes de point arret ");
+                }
+                if (point.getPrixDepuisDepart().compareTo(precedent.getPrixDepuisDepart()) <= 0) {
+                    throw new BusinessException("Les prix depuis le depart doivent etre croissants");
+                }
+            }
+        }
+
+        return pointsTries;
+    }
+
     @Override
     public TrajetResponse findById(Long id) {
         Trajet trajet = trajetRepository.findById(id)

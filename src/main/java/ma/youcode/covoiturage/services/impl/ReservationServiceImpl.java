@@ -125,7 +125,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationResponse> findByPassagerId(Long passagerId) {
-        return List.of();
+        Passager passager = passagerRepository.findById(passagerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Passager introuvable avec l'identifiant : " + passagerId));
+
+        return passager.getReservations().stream()
+                .map(reservationMapper::toResponse)
+                .toList();
     }
 
     @Override

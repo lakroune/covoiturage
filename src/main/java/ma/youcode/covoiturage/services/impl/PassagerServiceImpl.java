@@ -3,6 +3,7 @@ package ma.youcode.covoiturage.services.impl;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequest;
 import ma.youcode.covoiturage.dtos.requests.PassagerRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.PassagerResponse;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PassagerServiceImpl implements PassagerService {
 
     private final PassagerRepository passagerRepository;
@@ -26,6 +28,7 @@ public class PassagerServiceImpl implements PassagerService {
 
     @Override
     public PassagerResponse create(PassagerRequest request) {
+        log.info("Creation d'un passager en cours");
         if (passagerRepository.existsByEmail(request.getEmail())) {
             throw new ConflictException("L'email doit être unique.");
         }
@@ -41,9 +44,11 @@ public class PassagerServiceImpl implements PassagerService {
 
     @Override
     public List<PassagerResponse> findAll() {
-        return passagerRepository.findAll().stream()
+        List<PassagerResponse> passagers = passagerRepository.findAll().stream()
                 .map(passagerMapper::toResponse)
                 .toList();
+        log.info("Liste des passagers recuperee, nombre={}", passagers.size());
+        return passagers;
     }
 
     @Override
@@ -52,6 +57,7 @@ public class PassagerServiceImpl implements PassagerService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'identifiant : " + id));
 
+        log.info("Passager recupere, id={}", id);
         return passagerMapper.toResponse(passager);
     }
 
@@ -69,7 +75,9 @@ public class PassagerServiceImpl implements PassagerService {
         passager.setPrenom(request.getPrenom());
         passager.setTelephone(request.getTelephone());
 
-        return passagerMapper.toResponse(passagerRepository.save(passager));
+        Passager updatedPassager = passagerRepository.save(passager);
+        log.info("Passager mis a jour avec succes, id={}", id);
+        return passagerMapper.toResponse(updatedPassager);
     }
 
     @Override
@@ -80,6 +88,7 @@ public class PassagerServiceImpl implements PassagerService {
                     "Passager introuvable avec l'email : " + email);
         }
 
+        log.info("Passager trouve par email, id={}", passager.getId());
         return passagerMapper.toResponse(passager);
     }
 
@@ -89,8 +98,10 @@ public class PassagerServiceImpl implements PassagerService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'identifiant : " + id));
 
-        return passager.getReservations().stream()
+        List<ReservationResponse> reservations = passager.getReservations().stream()
                 .map(reservationMapper::toResponse)
                 .toList();
+        log.info("Reservations du passager recuperees, passagerId={}, nombre={}", id, reservations.size());
+        return reservations;
     }
 }

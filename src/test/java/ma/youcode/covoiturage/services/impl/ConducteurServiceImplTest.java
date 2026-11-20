@@ -127,4 +127,17 @@ class ConducteurServiceImplTest {
         verify(conducteurRepository).save(conducteur);
         verify(conducteurMapper).toResponse(conducteur);
     }
+
+    @Test
+    void doitSupprimerUnConducteur() {
+        Long id = 1L;
+        Conducteur conducteur = new Conducteur();
+
+        when(conducteurRepository.findById(id)).thenReturn(java.util.Optional.of(conducteur));
+
+        conducteurService.delete(id);
+
+        verify(conducteurRepository).findById(id);
+        verify(conducteurRepository).delete(conducteur);
+    }
 }

@@ -78,4 +78,20 @@ class PassagerServiceImplTest {
         assertEquals(List.of(premiereResponse, secondeResponse), result);
         verify(passagerRepository).findAll();
     }
+
+    @Test
+    void doitRetournerUnPassagerParSonIdentifiant() {
+        Long id = 1L;
+        Passager passager = new Passager();
+        PassagerResponse response = new PassagerResponse();
+
+        when(passagerRepository.findById(id)).thenReturn(java.util.Optional.of(passager));
+        when(passagerMapper.toResponse(passager)).thenReturn(response);
+
+        PassagerResponse result = passagerService.findById(id);
+
+        assertSame(response, result);
+        verify(passagerRepository).findById(id);
+        verify(passagerMapper).toResponse(passager);
+    }
 }

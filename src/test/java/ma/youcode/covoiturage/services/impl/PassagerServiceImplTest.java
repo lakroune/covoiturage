@@ -116,4 +116,19 @@ class PassagerServiceImplTest {
         verify(passagerRepository).save(passager);
         verify(passagerMapper).toResponse(passager);
     }
+
+    @Test
+    void doitRechercherUnPassagerParEmail() {
+        String email = "sara.alami@example.com";
+        Passager passager = new Passager();
+        PassagerResponse response = new PassagerResponse();
+
+        when(passagerRepository.findByEmail(email)).thenReturn(passager);
+        when(passagerMapper.toResponse(passager)).thenReturn(response);
+
+        PassagerResponse result = passagerService.searchByEmail(email);
+
+        assertSame(response, result);
+        verify(passagerRepository).findByEmail(email);
+    }
 }

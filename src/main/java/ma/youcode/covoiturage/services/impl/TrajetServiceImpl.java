@@ -2,6 +2,7 @@ package ma.youcode.covoiturage.services.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -263,6 +264,11 @@ public class TrajetServiceImpl implements TrajetService {
                     "Seul un trajet publié peut être terminé");
         }
 
+        if (LocalDateTime.now().isBefore(trajet.getDateDepart())) {
+            throw new ConflictException(
+                    "Un trajet ne peut être terminé qu'après son heure de départ.");
+        }
+
         trajet.setStatut(StatutTrajet.TERMINE);
         return trajetMapper.toResponse(trajetRepository.save(trajet));
     }
@@ -280,6 +286,11 @@ public class TrajetServiceImpl implements TrajetService {
         if (trajet.getStatut() != StatutTrajet.PUBLIE) {
             throw new ConflictException(
                     "Seul un trajet publié peut être annulé");
+        }
+
+        if (!LocalDateTime.now().isBefore(trajet.getDateDepart())) {
+            throw new ConflictException(
+                    "Un trajet ne peut être annulé qu'avant son heure de départ.");
         }
 
         trajet.setStatut(StatutTrajet.ANNULE);

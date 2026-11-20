@@ -91,6 +91,15 @@ public class PassagerController {
     }
 
     @GetMapping(value = "/search", params = "email")
+    @Operation(
+            summary = "Rechercher un passager par email",
+            description = "Retourne le passager associé à l'adresse email indiquée.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Passager récupéré avec succès"),
+            @ApiResponse(responseCode = "404", description = "Passager introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public PassagerResponse searchByEmail(@RequestParam String email) {
         return passagerService.searchByEmail(email);
     }

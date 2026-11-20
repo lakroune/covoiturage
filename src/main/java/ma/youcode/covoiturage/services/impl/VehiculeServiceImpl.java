@@ -14,10 +14,12 @@ import ma.youcode.covoiturage.repositories.ConducteurRepository;
 import ma.youcode.covoiturage.repositories.VehiculeRepository;
 import ma.youcode.covoiturage.services.VehiculeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VehiculeServiceImpl implements VehiculeService {
 
     private final VehiculeRepository vehiculeRepository;
@@ -26,6 +28,7 @@ public class VehiculeServiceImpl implements VehiculeService {
 
     @Override
     public VehiculeResponse create(VehiculeRequest request) {
+        log.info("Creation d'un vehicule en cours, conducteurId={}", request.getConducteurId());
         if (vehiculeRepository.existsByImmatriculation(request.getImmatriculation())) {
             throw new ConflictException("L'immatriculation doit être unique.");
         }
@@ -37,7 +40,9 @@ public class VehiculeServiceImpl implements VehiculeService {
         Vehicule vehicule = vehiculeMapper.toEntity(request);
         vehicule.setConducteur(conducteur);
 
-        return vehiculeMapper.toResponse(vehiculeRepository.save(vehicule));
+        Vehicule savedVehicule = vehiculeRepository.save(vehicule);
+        log.info("Vehicule cree avec succes, id={}", savedVehicule.getId());
+        return vehiculeMapper.toResponse(savedVehicule);
     }
 
     @Override
@@ -46,6 +51,7 @@ public class VehiculeServiceImpl implements VehiculeService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'identifiant : " + id));
 
+        log.info("Vehicule recupere, id={}", id);
         return vehiculeMapper.toResponse(vehicule);
     }
 
@@ -55,13 +61,17 @@ public class VehiculeServiceImpl implements VehiculeService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + conducteurId));
 
-        return vehiculeRepository.findByConducteurId(conducteurId).stream()
+        List<VehiculeResponse> vehicules = vehiculeRepository.findByConducteurId(conducteurId).stream()
                 .map(vehiculeMapper::toResponse)
                 .toList();
+        log.info("Vehicules du conducteur recuperes, conducteurId={}, nombre={}",
+                conducteurId, vehicules.size());
+        return vehicules;
     }
 
     @Override
     public VehiculeResponse update(Long id, VehiculeRequestUpdate request) {
+        log.info("Mise a jour d'un vehicule en cours, id={}", id);
         Vehicule vehicule = vehiculeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'identifiant : " + id));
@@ -77,11 +87,14 @@ public class VehiculeServiceImpl implements VehiculeService {
         vehicule.setCouleur(request.getCouleur());
         vehicule.setCapacite(request.getCapacite());
 
-        return vehiculeMapper.toResponse(vehiculeRepository.save(vehicule));
+        Vehicule updatedVehicule = vehiculeRepository.save(vehicule);
+        log.info("Vehicule mis a jour avec succes, id={}", id);
+        return vehiculeMapper.toResponse(updatedVehicule);
     }
 
     @Override
     public void delete(Long id) {
+        log.info("Suppression d'un vehicule en cours, id={}", id);
         Vehicule vehicule = vehiculeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'identifiant : " + id));
@@ -92,5 +105,6 @@ public class VehiculeServiceImpl implements VehiculeService {
         }
 
         vehiculeRepository.delete(vehicule);
+        log.info("Vehicule supprime avec succes, id={}", id);
     }
 }

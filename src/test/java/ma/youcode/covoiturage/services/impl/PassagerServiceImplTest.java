@@ -94,4 +94,26 @@ class PassagerServiceImplTest {
         verify(passagerRepository).findById(id);
         verify(passagerMapper).toResponse(passager);
     }
+
+    @Test
+    void doitMettreAJourUnPassager() {
+        Long id = 1L;
+        Passager passager = new Passager();
+        PassagerRequestUpdate request = new PassagerRequestUpdate();
+        request.setNom("Alami");
+        request.setPrenom("Sara");
+        request.setTelephone("0612345678");
+        PassagerResponse response = new PassagerResponse();
+
+        when(passagerRepository.findById(id)).thenReturn(java.util.Optional.of(passager));
+        when(passagerRepository.existsByTelephoneAndIdNot(request.getTelephone(), id)).thenReturn(false);
+        when(passagerRepository.save(passager)).thenReturn(passager);
+        when(passagerMapper.toResponse(passager)).thenReturn(response);
+
+        PassagerResponse result = passagerService.update(id, request);
+
+        assertSame(response, result);
+        verify(passagerRepository).save(passager);
+        verify(passagerMapper).toResponse(passager);
+    }
 }

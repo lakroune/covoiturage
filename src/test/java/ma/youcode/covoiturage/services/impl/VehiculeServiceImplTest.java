@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
@@ -72,6 +74,24 @@ class VehiculeServiceImplTest {
 
         assertSame(response, result);
         verify(vehiculeRepository).findById(1L);
+        verify(vehiculeMapper).toResponse(vehicule);
+    }
+
+    @Test
+    void doitRetournerLesVehiculesDUnConducteur() {
+        Conducteur conducteur = new Conducteur();
+        Vehicule vehicule = new Vehicule();
+        VehiculeResponse response = new VehiculeResponse();
+
+        when(conducteurRepository.findById(1L)).thenReturn(java.util.Optional.of(conducteur));
+        when(vehiculeRepository.findByConducteurId(1L)).thenReturn(List.of(vehicule));
+        when(vehiculeMapper.toResponse(vehicule)).thenReturn(response);
+
+        List<VehiculeResponse> result = vehiculeService.findByConducteurId(1L);
+
+        assertSame(response, result.get(0));
+        verify(conducteurRepository).findById(1L);
+        verify(vehiculeRepository).findByConducteurId(1L);
         verify(vehiculeMapper).toResponse(vehicule);
     }
 }

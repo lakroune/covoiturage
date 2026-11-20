@@ -61,4 +61,21 @@ class PassagerServiceImplTest {
         verify(passagerRepository).save(passager);
         verify(passagerMapper).toResponse(passager);
     }
+
+    @Test
+    void doitRetournerTousLesPassagers() {
+        Passager premier = new Passager();
+        Passager second = new Passager();
+        PassagerResponse premiereResponse = new PassagerResponse();
+        PassagerResponse secondeResponse = new PassagerResponse();
+
+        when(passagerRepository.findAll()).thenReturn(List.of(premier, second));
+        when(passagerMapper.toResponse(premier)).thenReturn(premiereResponse);
+        when(passagerMapper.toResponse(second)).thenReturn(secondeResponse);
+
+        List<PassagerResponse> result = passagerService.findAll();
+
+        assertEquals(List.of(premiereResponse, secondeResponse), result);
+        verify(passagerRepository).findAll();
+    }
 }

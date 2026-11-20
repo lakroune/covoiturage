@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.youcode.covoiturage.dtos.requests.ReservationRequest;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
 import ma.youcode.covoiturage.entities.Passager;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -36,6 +38,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse create(ReservationRequest request) {
+        log.info("Creation d'une reservation en cours, passagerId={}, trajetId={}",
+                request.getPassagerId(), request.getTrajetId());
 
         
         Passager passager = passagerRepository.findById(request.getPassagerId())
@@ -95,7 +99,9 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setDateReservation(LocalDateTime.now());
         reservation.setStatut(StatutReservation.CONFIRMEE);
 
-        return reservationMapper.toResponse(reservationRepository.save(reservation));
+        Reservation savedReservation = reservationRepository.save(reservation);
+        log.info("Reservation creee avec succes, id={}", savedReservation.getId());
+        return reservationMapper.toResponse(savedReservation);
     }
 
     private PointArret findPoint(Long id) {
@@ -122,6 +128,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Reservation introuvable avec l'identifiant : " + id));
 
+        log.info("Reservation recuperee, id={}", id);
         return reservationMapper.toResponse(reservation);
     }
 
@@ -131,9 +138,12 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'identifiant : " + passagerId));
 
-        return passager.getReservations().stream()
+        List<ReservationResponse> reservations = passager.getReservations().stream()
                 .map(reservationMapper::toResponse)
                 .toList();
+        log.info("Reservations du passager recuperees, passagerId={}, nombre={}",
+                passagerId, reservations.size());
+        return reservations;
     }
 
     @Override
@@ -153,6 +163,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         reservation.setStatut(StatutReservation.ANNULEE);
-        return reservationMapper.toResponse(reservationRepository.save(reservation));
+        Reservation cancelledReservation = reservationRepository.save(reservation);
+        log.info("Reservation annulee avec succes, id={}", id);
+        return reservationMapper.toResponse(cancelledReservation);
     }
 }

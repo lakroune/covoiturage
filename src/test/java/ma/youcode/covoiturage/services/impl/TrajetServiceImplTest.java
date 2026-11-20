@@ -98,6 +98,21 @@ class TrajetServiceImplTest {
         verify(trajetMapper).toResponse(trajet);
     }
 
+    @Test
+    void doitRetournerLesTrajetsDUnConducteur() {
+        Trajet trajet = new Trajet();
+        TrajetResponse response = new TrajetResponse();
+
+        when(trajetRepository.findByVehiculeConducteurId(1L)).thenReturn(List.of(trajet));
+        when(trajetMapper.toResponse(trajet)).thenReturn(response);
+
+        List<TrajetResponse> result = trajetService.findByConducteurId(1L);
+
+        assertSame(response, result.get(0));
+        verify(trajetRepository).findByVehiculeConducteurId(1L);
+        verify(trajetMapper).toResponse(trajet);
+    }
+
     private PointArretRequest creerPoint(
             String ville,
             int ordre,

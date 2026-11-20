@@ -131,4 +131,22 @@ class PassagerServiceImplTest {
         assertSame(response, result);
         verify(passagerRepository).findByEmail(email);
     }
+
+    @Test
+    void doitRetournerLesReservationsDUnPassager() {
+        Long id = 1L;
+        Passager passager = new Passager();
+        Reservation reservation = new Reservation();
+        ReservationResponse response = new ReservationResponse();
+        passager.setReservations(List.of(reservation));
+
+        when(passagerRepository.findById(id)).thenReturn(java.util.Optional.of(passager));
+        when(reservationMapper.toResponse(reservation)).thenReturn(response);
+
+        List<ReservationResponse> result = passagerService.findReservations(id);
+
+        assertEquals(List.of(response), result);
+        verify(passagerRepository).findById(id);
+        verify(reservationMapper).toResponse(reservation);
+    }
 }

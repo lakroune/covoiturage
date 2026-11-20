@@ -5,10 +5,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
 import ma.youcode.covoiturage.dtos.responses.PointArretResponse;
 import ma.youcode.covoiturage.dtos.responses.ReservationResponse;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -39,6 +44,15 @@ public class TrajetController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Consulter un trajet",
+            description = "Retourne le détail d'un trajet à partir de son identifiant.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Trajet récupéré avec succès"),
+            @ApiResponse(responseCode = "404", description = "Trajet introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public TrajetResponse findById(@PathVariable Long id) {
         return trajetService.findById(id);
     }

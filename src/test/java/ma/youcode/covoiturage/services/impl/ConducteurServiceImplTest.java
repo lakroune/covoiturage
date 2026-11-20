@@ -10,7 +10,11 @@ import java.util.List;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
+import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
+import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
+import ma.youcode.covoiturage.entities.Trajet;
+import ma.youcode.covoiturage.entities.Vehicule;
 import ma.youcode.covoiturage.mappers.ConducteurMapper;
 import ma.youcode.covoiturage.mappers.TrajetMapper;
 import ma.youcode.covoiturage.mappers.VehiculeMapper;
@@ -139,5 +143,22 @@ class ConducteurServiceImplTest {
 
         verify(conducteurRepository).findById(id);
         verify(conducteurRepository).delete(conducteur);
+    }
+
+    @Test
+    void doitRetournerLesVehiculesDUnConducteur() {
+        Long id = 1L;
+        Conducteur conducteur = new Conducteur();
+        Vehicule vehicule = new Vehicule();
+        VehiculeResponse response = new VehiculeResponse();
+
+        when(conducteurRepository.findById(id)).thenReturn(java.util.Optional.of(conducteur));
+        when(vehiculeRepository.findByConducteurId(id)).thenReturn(List.of(vehicule));
+        when(vehiculeMapper.toResponse(vehicule)).thenReturn(response);
+
+        List<VehiculeResponse> result = conducteurService.findVehiculesByConducteur(id);
+
+        assertEquals(List.of(response), result);
+        verify(vehiculeRepository).findByConducteurId(id);
     }
 }

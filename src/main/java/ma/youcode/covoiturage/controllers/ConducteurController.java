@@ -63,6 +63,15 @@ public class ConducteurController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Consulter un conducteur",
+            description = "Retourne les informations d'un conducteur à partir de son identifiant.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Conducteur récupéré avec succès"),
+            @ApiResponse(responseCode = "404", description = "Conducteur introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public ConducteurResponse findById(@PathVariable Long id) {
         return conducteurService.findById(id);
     }

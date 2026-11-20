@@ -105,6 +105,15 @@ public class PassagerController {
     }
 
     @GetMapping("/{id}/reservations")
+    @Operation(
+            summary = "Consulter l'historique des réservations",
+            description = "Retourne toutes les réservations associées au passager indiqué.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Historique des réservations récupéré avec succès"),
+            @ApiResponse(responseCode = "404", description = "Passager introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<ReservationResponse> findReservations(@PathVariable Long id) {
         return passagerService.findReservations(id);
     }

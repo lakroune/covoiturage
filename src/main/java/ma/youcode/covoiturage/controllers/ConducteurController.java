@@ -45,7 +45,19 @@ public class ConducteurController {
         return conducteurService.create(request);
     }
 
+
+
+    
+
     @GetMapping
+    @Operation(
+            summary = "Lister tous les conducteurs",
+            description = "Retourne la liste de tous les conducteurs enregistrés.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Liste des conducteurs récupérée avec succès"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<ConducteurResponse> findAll() {
         return conducteurService.findAll();
     }

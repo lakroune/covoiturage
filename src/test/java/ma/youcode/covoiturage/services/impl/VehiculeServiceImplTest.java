@@ -59,4 +59,19 @@ class VehiculeServiceImplTest {
         verify(vehiculeRepository).save(vehicule);
         verify(vehiculeMapper).toResponse(vehicule);
     }
+
+    @Test
+    void doitRetournerUnVehiculeParSonIdentifiant() {
+        Vehicule vehicule = new Vehicule();
+        VehiculeResponse response = new VehiculeResponse();
+
+        when(vehiculeRepository.findById(1L)).thenReturn(java.util.Optional.of(vehicule));
+        when(vehiculeMapper.toResponse(vehicule)).thenReturn(response);
+
+        VehiculeResponse result = vehiculeService.findById(1L);
+
+        assertSame(response, result);
+        verify(vehiculeRepository).findById(1L);
+        verify(vehiculeMapper).toResponse(vehicule);
+    }
 }

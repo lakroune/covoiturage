@@ -57,17 +57,46 @@ public class TrajetController {
         return trajetService.findById(id);
     }
 
+
+    
     @GetMapping(params = "conducteurId")
+    @Operation(
+            summary = "Lister les trajets d'un conducteur",
+            description = "Retourne les trajets associés au conducteur indiqué.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Liste des trajets récupérée avec succès"),
+            @ApiResponse(responseCode = "404", description = "Conducteur introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<TrajetResponse> findByConducteurId(@RequestParam Long conducteurId) {
         return trajetService.findByConducteurId(conducteurId);
     }
 
     @GetMapping("/{id}/points-arret")
+    @Operation(
+            summary = "Consulter les points d'arrêt d'un trajet",
+            description = "Retourne les points d'arrêt ordonnés du trajet indiqué.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Points d'arrêt récupérés avec succès"),
+            @ApiResponse(responseCode = "404", description = "Trajet introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<PointArretResponse> findPointsArret(@PathVariable Long id) {
         return trajetService.findPointsArret(id);
     }
 
     @GetMapping("/{id}/reservations")
+    @Operation(
+            summary = "Consulter les réservations d'un trajet",
+            description = "Retourne les réservations associées au trajet indiqué.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Réservations récupérées avec succès"),
+            @ApiResponse(responseCode = "404", description = "Trajet introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<ReservationResponse> findReservations(@PathVariable Long id) {
         return trajetService.findReservations(id);
     }

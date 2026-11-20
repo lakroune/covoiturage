@@ -178,4 +178,19 @@ class ConducteurServiceImplTest {
         assertEquals(List.of(response), result);
         verify(trajetRepository).findByVehiculeConducteurId(id);
     }
+
+    @Test
+    void doitRechercherUnConducteurParEmail() {
+        String email = "youssef.alami@example.com";
+        Conducteur conducteur = new Conducteur();
+        ConducteurResponse response = new ConducteurResponse();
+
+        when(conducteurRepository.findByEmail(email)).thenReturn(java.util.Optional.of(conducteur));
+        when(conducteurMapper.toResponse(conducteur)).thenReturn(response);
+
+        ConducteurResponse result = conducteurService.searchByEmail(email);
+
+        assertSame(response, result);
+        verify(conducteurRepository).findByEmail(email);
+    }
 }

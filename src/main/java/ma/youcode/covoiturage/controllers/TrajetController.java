@@ -102,6 +102,15 @@ public class TrajetController {
     }
 
     @GetMapping("/recherche")
+    @Operation(
+            summary = "Rechercher des trajets",
+            description = "Recherche des trajets disponibles selon les villes, la date, le nombre de places et le prix maximal, avec pagination.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Résultats de recherche récupérés avec succès"),
+            @ApiResponse(responseCode = "400", description = "Paramètres de recherche invalides"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public Page<TrajetResponse> search(
             @RequestParam String villeDepart,
             @RequestParam String villeArrivee,
@@ -119,6 +128,16 @@ public class TrajetController {
     }
 
     @PatchMapping("/{id}/annuler")
+    @Operation(
+            summary = "Annuler un trajet",
+            description = "Annule un trajet publié et les réservations qui lui sont associées.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Trajet annulé avec succès"),
+            @ApiResponse(responseCode = "400", description = "Annulation impossible selon l'état ou l'heure du trajet"),
+            @ApiResponse(responseCode = "404", description = "Trajet introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public TrajetResponse annuler(@PathVariable Long id) {
         return trajetService.annuler(id);
     }

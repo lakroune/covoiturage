@@ -49,6 +49,15 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), HttpStatus.FORBIDDEN, request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleInternalServerError(
+            Exception exception, HttpServletRequest request) {
+        return buildErrorResponse(
+                "Une erreur interne est survenue. Veuillez réessayer plus tard.",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request);
+    }
+
     private ResponseEntity<ErrorMessage> buildErrorResponse(
             String message, HttpStatus status, HttpServletRequest request) {
         ErrorMessage body = new ErrorMessage(

@@ -125,4 +125,16 @@ class VehiculeServiceImplTest {
         verify(vehiculeRepository).save(vehicule);
         verify(vehiculeMapper).toResponse(vehicule);
     }
+
+    @Test
+    void doitSupprimerUnVehiculeSansTrajetAssocie() {
+        Vehicule vehicule = new Vehicule();
+
+        when(vehiculeRepository.findById(1L)).thenReturn(java.util.Optional.of(vehicule));
+
+        vehiculeService.delete(1L);
+
+        verify(vehiculeRepository).findById(1L);
+        verify(vehiculeRepository).delete(vehicule);
+    }
 }

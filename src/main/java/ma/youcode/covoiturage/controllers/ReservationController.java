@@ -52,6 +52,15 @@ public class ReservationController {
     }
 
     @GetMapping(params = "passagerId")
+    @Operation(
+            summary = "Consulter les réservations d'un passager",
+            description = "Retourne toutes les réservations associées au passager indiqué.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Réservations récupérées avec succès"),
+            @ApiResponse(responseCode = "404", description = "Passager introuvable"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<ReservationResponse> findByPassagerId(@RequestParam Long passagerId) {
         return reservationService.findByPassagerId(passagerId);
     }

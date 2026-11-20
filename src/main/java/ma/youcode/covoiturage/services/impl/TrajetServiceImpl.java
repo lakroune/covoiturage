@@ -34,6 +34,7 @@ import ma.youcode.covoiturage.repositories.TrajetRepository;
 import ma.youcode.covoiturage.repositories.VehiculeRepository;
 import ma.youcode.covoiturage.services.TrajetService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -237,6 +238,7 @@ public class TrajetServiceImpl implements TrajetService {
     }
 
     @Override
+    @Transactional
     public TrajetResponse annuler(Long id) {
         log.info("Annulation du trajet en cours, id={}", id);
         Trajet trajet = trajetRepository.findById(id)

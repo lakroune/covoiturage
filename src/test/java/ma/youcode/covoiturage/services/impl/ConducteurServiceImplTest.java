@@ -89,4 +89,20 @@ class ConducteurServiceImplTest {
         assertEquals(List.of(premiereResponse, secondeResponse), result);
         verify(conducteurRepository).findAll();
     }
+
+    @Test
+    void doitRetournerUnConducteurParSonIdentifiant() {
+        Long id = 1L;
+        Conducteur conducteur = new Conducteur();
+        ConducteurResponse response = new ConducteurResponse();
+
+        when(conducteurRepository.findById(id)).thenReturn(java.util.Optional.of(conducteur));
+        when(conducteurMapper.toResponse(conducteur)).thenReturn(response);
+
+        ConducteurResponse result = conducteurService.findById(id);
+
+        assertSame(response, result);
+        verify(conducteurRepository).findById(id);
+        verify(conducteurMapper).toResponse(conducteur);
+    }
 }

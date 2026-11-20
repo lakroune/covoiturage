@@ -193,4 +193,19 @@ class ConducteurServiceImplTest {
         assertSame(response, result);
         verify(conducteurRepository).findByEmail(email);
     }
+
+    @Test
+    void doitRechercherDesConducteursParNom() {
+        String nom = "Alami";
+        Conducteur conducteur = new Conducteur();
+        ConducteurResponse response = new ConducteurResponse();
+
+        when(conducteurRepository.findByNomContainingIgnoreCase(nom)).thenReturn(List.of(conducteur));
+        when(conducteurMapper.toResponse(conducteur)).thenReturn(response);
+
+        List<ConducteurResponse> result = conducteurService.serachByNom(nom);
+
+        assertEquals(List.of(response), result);
+        verify(conducteurRepository).findByNomContainingIgnoreCase(nom);
+    }
 }

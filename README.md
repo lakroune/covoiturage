@@ -1,3 +1,5 @@
+<img src="./conception-uml/carte-covoiturage.png" alt="Carte du covoiturage" width="90" align="right">
+
 # Application de covoiturage
 
 ## 1. Contexte du projet
@@ -42,11 +44,6 @@ Le diagramme de classes est disponible dans [conception-uml/](./conception-uml/)
 
 ![Diagramme de classes UML](./conception-uml/Covoiturage%20%E2%80%94%20UML%20-%20Diagramme%20de%20classes%20UML%20%285%29.png)
 
-[Ouvrir le diagramme modifiable sur Lucidchart](https://lucid.app/lucidchart/5aa4fa89-e003-4a67-94f7-07a8dfb3e602/edit?view_items=reservation%2Cpassager%2CM0aNezkhj~e1%2CpPvNZ6RWi.PR%2CX0aNoPSbf6xY%2CuPvN5xQsdQGU&page=uml&invitationId=inv_182cef68-f1a9-4de5-b483-a8182823e34e)
-
-### Carte du parcours de covoiturage
-
-![Carte du parcours de covoiturage](./conception-uml/carte-covoiturage.png)
 
 ## 4. Modèle métier
 

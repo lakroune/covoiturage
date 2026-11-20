@@ -55,9 +55,11 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public List<ConducteurResponse> findAll() {
-        return conducteurRepository.findAll().stream()
+        List<ConducteurResponse> conducteurs = conducteurRepository.findAll().stream()
                 .map(conducteurMapper::toResponse)
                 .toList();
+        log.info("Liste des conducteurs recuperee, nombre={}", conducteurs.size());
+        return conducteurs;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class ConducteurServiceImpl implements ConducteurService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + id));
 
+        log.info("Conducteur recupere, id={}", id);
         return conducteurMapper.toResponse(conducteur);
     }
 
@@ -79,7 +82,9 @@ public class ConducteurServiceImpl implements ConducteurService {
         conducteur.setPrenom(request.getPrenom());
         conducteur.setTelephone(request.getTelephone());
 
-        return conducteurMapper.toResponse(conducteurRepository.save(conducteur));
+        Conducteur updatedConducteur = conducteurRepository.save(conducteur);
+        log.info("Conducteur mis a jour avec succes, id={}", id);
+        return conducteurMapper.toResponse(updatedConducteur);
     }
 
     @Override
@@ -89,6 +94,7 @@ public class ConducteurServiceImpl implements ConducteurService {
                         "Conducteur introuvable avec l'identifiant : " + id));
 
         conducteurRepository.delete(conducteur);
+        log.info("Conducteur supprime avec succes, id={}", id);
     }
 
     @Override
@@ -97,9 +103,11 @@ public class ConducteurServiceImpl implements ConducteurService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + id));
 
-        return vehiculeRepository.findByConducteurId(id).stream()
+        List<VehiculeResponse> vehicules = vehiculeRepository.findByConducteurId(id).stream()
                 .map(vehiculeMapper::toResponse)
                 .toList();
+        log.info("Vehicules du conducteur recuperes, conducteurId={}, nombre={}", id, vehicules.size());
+        return vehicules;
     }
 
     @Override
@@ -108,9 +116,11 @@ public class ConducteurServiceImpl implements ConducteurService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'identifiant : " + id));
 
-        return trajetRepository.findByVehiculeConducteurId(id).stream()
+        List<TrajetResponse> trajets = trajetRepository.findByVehiculeConducteurId(id).stream()
                 .map(trajetMapper::toResponse)
                 .toList();
+        log.info("Trajets du conducteur recuperes, conducteurId={}, nombre={}", id, trajets.size());
+        return trajets;
     }
 
     @Override
@@ -119,14 +129,17 @@ public class ConducteurServiceImpl implements ConducteurService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'email : " + email));
 
+        log.info("Conducteur trouve par email, id={}", conducteur.getId());
         return conducteurMapper.toResponse(conducteur);
     }
 
     @Override
     public List<ConducteurResponse> serachByNom(String nom) {
-        return conducteurRepository.findByNomContainingIgnoreCase(nom).stream()
+        List<ConducteurResponse> conducteurs = conducteurRepository.findByNomContainingIgnoreCase(nom).stream()
                 .map(conducteurMapper::toResponse)
                 .toList();
+        log.info("Recherche de conducteurs par nom terminee, nombre={}", conducteurs.size());
+        return conducteurs;
     }
 
 }

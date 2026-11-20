@@ -161,4 +161,21 @@ class ConducteurServiceImplTest {
         assertEquals(List.of(response), result);
         verify(vehiculeRepository).findByConducteurId(id);
     }
+
+    @Test
+    void doitRetournerLesTrajetsDUnConducteur() {
+        Long id = 1L;
+        Conducteur conducteur = new Conducteur();
+        Trajet trajet = new Trajet();
+        TrajetResponse response = new TrajetResponse();
+
+        when(conducteurRepository.findById(id)).thenReturn(java.util.Optional.of(conducteur));
+        when(trajetRepository.findByVehiculeConducteurId(id)).thenReturn(List.of(trajet));
+        when(trajetMapper.toResponse(trajet)).thenReturn(response);
+
+        List<TrajetResponse> result = conducteurService.findTrajetsByConducteur(id);
+
+        assertEquals(List.of(response), result);
+        verify(trajetRepository).findByVehiculeConducteurId(id);
+    }
 }

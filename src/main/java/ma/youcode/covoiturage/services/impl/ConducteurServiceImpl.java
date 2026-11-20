@@ -3,6 +3,7 @@ package ma.youcode.covoiturage.services.impl;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ConducteurServiceImpl implements ConducteurService {
 
     private final ConducteurRepository conducteurRepository;
@@ -33,16 +35,21 @@ public class ConducteurServiceImpl implements ConducteurService {
 
     @Override
     public ConducteurResponse create(ConducteurRequest request) {
+        log.info("Création d'un conducteur en cours");
+
         if (conducteurRepository.existsByEmail(request.getEmail())) {
+            log.warn("Création refusée : email déjà utilisé");
             throw new ConflictException("L'email doit être unique.");
         }
 
         if (conducteurRepository.existsByNumeroPermis(request.getNumeroPermis())) {
+            log.warn("Création refusée : numéro de permis déjà utilisé");
             throw new ConflictException("Le numéro de permis doit être unique.");
         }
 
         Conducteur conducteur = conducteurMapper.toEntity(request);
         Conducteur savedConducteur = conducteurRepository.save(conducteur);
+        log.info("Conducteur créé avec succès, id=", savedConducteur.getId());
         return conducteurMapper.toResponse(savedConducteur);
     }
 

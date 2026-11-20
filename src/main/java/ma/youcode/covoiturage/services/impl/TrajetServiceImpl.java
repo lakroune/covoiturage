@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ma.youcode.covoiturage.dtos.requests.PointArretRequest;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TrajetServiceImpl implements TrajetService {
 
     private final TrajetRepository trajetRepository;
@@ -47,6 +49,7 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public TrajetResponse create(TrajetRequest request) {
+        log.info("Creation d'un trajet en cours, vehiculeId={}", request.getVehiculeId());
         Vehicule vehicule = vehiculeRepository.findById(request.getVehiculeId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Vehicule introuvable avec l'identifiant : " + request.getVehiculeId()));
@@ -79,7 +82,9 @@ public class TrajetServiceImpl implements TrajetService {
                 .getHeurePassage());
         trajet.setPointsArret(pointsArret);
 
-        return trajetMapper.toResponse(trajetRepository.save(trajet));
+        Trajet savedTrajet = trajetRepository.save(trajet);
+        log.info("Trajet cree avec succes, id={}", savedTrajet.getId());
+        return trajetMapper.toResponse(savedTrajet);
     }
 
     private List<PointArretRequest> validateAndSortPoints(List<PointArretRequest> pointsRequest) {
@@ -134,14 +139,17 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
 
+        log.info("Trajet recupere, id={}", id);
         return trajetMapper.toResponse(trajet);
     }
 
     @Override
     public List<TrajetResponse> findByConducteurId(Long conducteurId) {
-        return trajetRepository.findByVehiculeConducteurId(conducteurId).stream()
+        List<TrajetResponse> trajets = trajetRepository.findByVehiculeConducteurId(conducteurId).stream()
                 .map(trajetMapper::toResponse)
                 .toList();
+        log.info("Trajets du conducteur recuperes, conducteurId={}, nombre={}", conducteurId, trajets.size());
+        return trajets;
     }
 
     @Override
@@ -150,9 +158,11 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
 
-        return pointArretRepository.findByTrajetIdOrderByOrdreAsc(id).stream()
+        List<PointArretResponse> points = pointArretRepository.findByTrajetIdOrderByOrdreAsc(id).stream()
                 .map(pointArretMapper::toResponse)
                 .toList();
+        log.info("Points d'arret recuperes, trajetId={}, nombre={}", id, points.size());
+        return points;
     }
 
     @Override
@@ -161,9 +171,11 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
 
-        return trajet.getReservations().stream()
+        List<ReservationResponse> reservations = trajet.getReservations().stream()
                 .map(reservationMapper::toResponse)
                 .toList();
+        log.info("Reservations du trajet recuperees, trajetId={}, nombre={}", id, reservations.size());
+        return reservations;
     }
 
     @Override
@@ -174,6 +186,7 @@ public class TrajetServiceImpl implements TrajetService {
             Integer nombrePlaces,
             BigDecimal prixMax,
             Pageable pageable) {
+        log.info("Recherche de trajets, depart={}, arrivee={}, date={}", villeDepart, villeArrivee, date);
         if (pageable.isPaged() && pageable.getPageSize() <= 0) {
             throw new BusinessException("La page doit être positive et la taille doit être supérieure à 0");
         }
@@ -181,7 +194,7 @@ public class TrajetServiceImpl implements TrajetService {
         LocalDateTime dateDebut = date.atStartOfDay();
         LocalDateTime dateFin = date.plusDays(1).atStartOfDay();
 
-        return trajetRepository.searchAvailableSegments(
+        Page<TrajetResponse> resultats = trajetRepository.searchAvailableSegments(
                         villeDepart,
                         villeArrivee,
                         dateDebut,
@@ -192,10 +205,13 @@ public class TrajetServiceImpl implements TrajetService {
                         StatutReservation.CONFIRMEE,
                         pageable)
                 .map(trajetMapper::toResponse);
+        log.info("Recherche de trajets terminee, nombre={}", resultats.getNumberOfElements());
+        return resultats;
     }
 
     @Override
     public TrajetResponse terminer(Long id) {
+        log.info("Finalisation du trajet en cours, id={}", id);
         Trajet trajet = trajetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
@@ -215,11 +231,14 @@ public class TrajetServiceImpl implements TrajetService {
         }
 
         trajet.setStatut(StatutTrajet.TERMINE);
-        return trajetMapper.toResponse(trajetRepository.save(trajet));
+        Trajet trajetTermine = trajetRepository.save(trajet);
+        log.info("Trajet termine avec succes, id={}", id);
+        return trajetMapper.toResponse(trajetTermine);
     }
 
     @Override
     public TrajetResponse annuler(Long id) {
+        log.info("Annulation du trajet en cours, id={}", id);
         Trajet trajet = trajetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + id));
@@ -242,6 +261,8 @@ public class TrajetServiceImpl implements TrajetService {
         trajet.getReservations().forEach(
                 reservation -> reservation.setStatut(StatutReservation.ANNULEE));
 
-        return trajetMapper.toResponse(trajetRepository.save(trajet));
+        Trajet trajetAnnule = trajetRepository.save(trajet);
+        log.info("Trajet annule avec succes, id={}", id);
+        return trajetMapper.toResponse(trajetAnnule);
     }
 }

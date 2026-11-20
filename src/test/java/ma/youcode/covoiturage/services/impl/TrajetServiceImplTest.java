@@ -83,6 +83,21 @@ class TrajetServiceImplTest {
         verify(trajetMapper).toResponse(trajet);
     }
 
+    @Test
+    void doitRetournerUnTrajetParSonIdentifiant() {
+        Trajet trajet = new Trajet();
+        TrajetResponse response = new TrajetResponse();
+
+        when(trajetRepository.findById(1L)).thenReturn(Optional.of(trajet));
+        when(trajetMapper.toResponse(trajet)).thenReturn(response);
+
+        TrajetResponse result = trajetService.findById(1L);
+
+        assertSame(response, result);
+        verify(trajetRepository).findById(1L);
+        verify(trajetMapper).toResponse(trajet);
+    }
+
     private PointArretRequest creerPoint(
             String ville,
             int ordre,

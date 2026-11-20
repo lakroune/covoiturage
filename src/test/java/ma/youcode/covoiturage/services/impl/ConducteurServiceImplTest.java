@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
+import ma.youcode.covoiturage.dtos.requests.ConducteurRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.mappers.ConducteurMapper;
@@ -103,6 +104,27 @@ class ConducteurServiceImplTest {
 
         assertSame(response, result);
         verify(conducteurRepository).findById(id);
+        verify(conducteurMapper).toResponse(conducteur);
+    }
+
+    @Test
+    void doitMettreAJourUnConducteur() {
+        Long id = 1L;
+        Conducteur conducteur = new Conducteur();
+        ConducteurRequestUpdate request = new ConducteurRequestUpdate();
+        request.setNom("Alami");
+        request.setPrenom("Youssef");
+        request.setTelephone("0612345678");
+        ConducteurResponse response = new ConducteurResponse();
+
+        when(conducteurRepository.findById(id)).thenReturn(java.util.Optional.of(conducteur));
+        when(conducteurRepository.save(conducteur)).thenReturn(conducteur);
+        when(conducteurMapper.toResponse(conducteur)).thenReturn(response);
+
+        ConducteurResponse result = conducteurService.update(id, request);
+
+        assertSame(response, result);
+        verify(conducteurRepository).save(conducteur);
         verify(conducteurMapper).toResponse(conducteur);
     }
 }

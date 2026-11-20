@@ -11,7 +11,6 @@ import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ma.youcode.covoiturage.dtos.requests.PointArretRequest;
 import ma.youcode.covoiturage.dtos.requests.TrajetRequest;
@@ -179,74 +178,20 @@ public class TrajetServiceImpl implements TrajetService {
             throw new BusinessException("La page doit être positive et la taille doit être supérieure à 0");
         }
 
-        List<TrajetResponse> resultats = trajetRepository.findAll().stream()
-                .filter(trajet -> trajet.getStatut() == StatutTrajet.PUBLIE)
-                .filter(trajet -> trajet.getDateDepart().toLocalDate().equals(date))
-                .filter(trajet -> hasAvailableSegment(
-                        trajet, villeDepart, villeArrivee, nombrePlaces, prixMax))
-                .map(trajetMapper::toResponse)
-                .toList();
+        LocalDateTime dateDebut = date.atStartOfDay();
+        LocalDateTime dateFin = date.plusDays(1).atStartOfDay();
 
-        if (pageable.isUnpaged()) {
-            return new PageImpl<>(resultats);
-        }
-
-        long debut = pageable.getOffset();
-        if (debut >= resultats.size()) {
-            return new PageImpl<>(List.of(), pageable, resultats.size());
-        }
-
-        int fin = (int) Math.min(debut + pageable.getPageSize(), resultats.size());
-        return new PageImpl<>(resultats.subList((int) debut, fin), pageable, resultats.size());
-    }
-
-    private boolean hasAvailableSegment(
-            Trajet trajet,
-            String villeDepart,
-            String villeArrivee,
-            Integer nombrePlaces,
-            BigDecimal prixMax) {
-
-                
-        List<PointArret> points = trajet.getPointsArret().stream()
-                .sorted(Comparator.comparing(PointArret::getOrdre))
-                .toList();
-
-        for (PointArret depart : points) {
-            if (!depart.getVille().equalsIgnoreCase(villeDepart)) {
-                continue;
-            }
-
-            for (PointArret arrivee : points) {
-                if (!arrivee.getVille().equalsIgnoreCase(villeArrivee)
-                        || depart.getOrdre() >= arrivee.getOrdre()) {
-                    continue;
-                }
-
-                BigDecimal prixSegment = arrivee.getPrixDepuisDepart()
-                        .subtract(depart.getPrixDepuisDepart());
-
-                int placesReservees = trajet.getReservations().stream()
-                        .filter(reservation -> reservation.getStatut() == StatutReservation.CONFIRMEE)
-                        .filter(reservation -> {
-                            PointArret reservationDepart = reservation.getPointMontee();
-                            PointArret reservationArrivee = reservation.getPointDescente();
-                            return reservationDepart != null
-                                    && reservationArrivee != null
-                                    && reservationDepart.getOrdre() < arrivee.getOrdre()
-                                    && reservationArrivee.getOrdre() > depart.getOrdre();
-                        })
-                        .mapToInt(reservation -> reservation.getNombrePlaces())
-                        .sum();
-
-                int placesDisponibles = trajet.getPlacesProposees() - placesReservees;
-                if (placesDisponibles >= nombrePlaces && prixSegment.compareTo(prixMax) <= 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return trajetRepository.searchAvailableSegments(
+                        villeDepart,
+                        villeArrivee,
+                        dateDebut,
+                        dateFin,
+                        nombrePlaces,
+                        prixMax,
+                        StatutTrajet.PUBLIE,
+                        StatutReservation.CONFIRMEE,
+                        pageable)
+                .map(trajetMapper::toResponse);
     }
 
     @Override

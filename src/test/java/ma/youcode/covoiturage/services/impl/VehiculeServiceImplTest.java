@@ -1,5 +1,6 @@
 package ma.youcode.covoiturage.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -7,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
+import ma.youcode.covoiturage.dtos.requests.VehiculeRequestUpdate;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
 import ma.youcode.covoiturage.entities.Vehicule;
@@ -92,6 +94,35 @@ class VehiculeServiceImplTest {
         assertSame(response, result.get(0));
         verify(conducteurRepository).findById(1L);
         verify(vehiculeRepository).findByConducteurId(1L);
+        verify(vehiculeMapper).toResponse(vehicule);
+    }
+
+    @Test
+    void doitMettreAJourUnVehicule() {
+        VehiculeRequestUpdate request = new VehiculeRequestUpdate();
+        request.setMarque("Peugeot");
+        request.setModele("208");
+        request.setImmatriculation("B-456");
+        request.setCouleur("Bleu");
+        request.setCapacite(5);
+
+        Vehicule vehicule = new Vehicule();
+        VehiculeResponse response = new VehiculeResponse();
+
+        when(vehiculeRepository.findById(1L)).thenReturn(java.util.Optional.of(vehicule));
+        when(vehiculeRepository.existsByImmatriculationAndIdNot("B-456", 1L)).thenReturn(false);
+        when(vehiculeRepository.save(vehicule)).thenReturn(vehicule);
+        when(vehiculeMapper.toResponse(vehicule)).thenReturn(response);
+
+        VehiculeResponse result = vehiculeService.update(1L, request);
+
+        assertSame(response, result);
+        assertEquals("Peugeot", vehicule.getMarque());
+        assertEquals("208", vehicule.getModele());
+        assertEquals("B-456", vehicule.getImmatriculation());
+        assertEquals("Bleu", vehicule.getCouleur());
+        assertEquals(5, vehicule.getCapacite());
+        verify(vehiculeRepository).save(vehicule);
         verify(vehiculeMapper).toResponse(vehicule);
     }
 }

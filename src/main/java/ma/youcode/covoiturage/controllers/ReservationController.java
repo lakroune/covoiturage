@@ -66,6 +66,17 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}/annuler")
+    @Operation(
+            summary = "Annuler une réservation",
+            description = "Annule la réservation indiquée lorsque les conditions d'annulation sont respectées.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Réservation annulée avec succès"),
+            @ApiResponse(responseCode = "400", description = "Annulation impossible après le délai autorisé"),
+            @ApiResponse(responseCode = "404", description = "Réservation introuvable"),
+            @ApiResponse(responseCode = "409", description = "Réservation déjà annulée"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public ReservationResponse annuler(@PathVariable Long id) {
         return reservationService.annuler(id);
     }

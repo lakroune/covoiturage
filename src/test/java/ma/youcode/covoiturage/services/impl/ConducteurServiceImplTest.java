@@ -1,10 +1,12 @@
 package ma.youcode.covoiturage.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import ma.youcode.covoiturage.dtos.requests.ConducteurRequest;
 import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
@@ -69,5 +71,22 @@ class ConducteurServiceImplTest {
         verify(conducteurRepository).existsByNumeroPermis(request.getNumeroPermis());
         verify(conducteurRepository).save(any(Conducteur.class));
         verify(conducteurMapper).toResponse(conducteur);
+    }
+
+    @Test
+    void doitRetournerTousLesConducteurs() {
+        Conducteur premier = new Conducteur();
+        Conducteur second = new Conducteur();
+        ConducteurResponse premiereResponse = new ConducteurResponse();
+        ConducteurResponse secondeResponse = new ConducteurResponse();
+
+        when(conducteurRepository.findAll()).thenReturn(List.of(premier, second));
+        when(conducteurMapper.toResponse(premier)).thenReturn(premiereResponse);
+        when(conducteurMapper.toResponse(second)).thenReturn(secondeResponse);
+
+        List<ConducteurResponse> result = conducteurService.findAll();
+
+        assertEquals(List.of(premiereResponse, secondeResponse), result);
+        verify(conducteurRepository).findAll();
     }
 }

@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.exceptions;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,12 +59,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorMessage> buildErrorResponse(
             String message, HttpStatus status, HttpServletRequest request) {
-        ErrorMessage body = new ErrorMessage(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                request.getRequestURI());
+        ErrorMessage body = new ErrorMessage(message, status, request.getRequestURI());
 
         return ResponseEntity.status(status).body(body);
     }

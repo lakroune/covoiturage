@@ -1,17 +1,21 @@
 package ma.youcode.covoiturage.exceptions;
 
 import java.time.LocalDateTime;
+import java.net.URI;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 
-@Getter
-@RequiredArgsConstructor
-public class ErrorMessage {
+public class ErrorMessage extends ProblemDetail {
 
-    private final LocalDateTime timestamp;
-    private final int status;
-    private final String error;
-    private final String message;
-    private final String path;
+    public ErrorMessage(String message, HttpStatus status, String path) {
+        super(ProblemDetail.forStatus(status));
+        setType(URI.create("urn:problem:" + status.name().toLowerCase()));
+        setTitle(status.getReasonPhrase());
+        setDetail(message);
+        setInstance(URI.create(path));
+        setProperty("timestamp", LocalDateTime.now());
+        setProperty("message", message);
+        setProperty("path", path);
+    }
 }

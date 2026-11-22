@@ -53,6 +53,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + request.getTrajetId()));
 
+        if (reservationRepository.existsByTrajetIdAndPassagerId(
+                request.getTrajetId(), request.getPassagerId())) {
+            throw new ConflictException(
+                    "Le passager possède déjà une réservation pour ce trajet.");
+        }
 
 
         if (trajet.getStatut() != StatutTrajet.PUBLIE) {

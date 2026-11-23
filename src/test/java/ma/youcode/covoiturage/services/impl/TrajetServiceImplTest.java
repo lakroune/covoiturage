@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -59,8 +58,8 @@ class TrajetServiceImplTest {
         request.setVehiculeId(2L);
         request.setPlacesProposees(3);
         request.setPointsArret(List.of(
-                creerPoint("Rabat", 0, depart, BigDecimal.ZERO),
-                creerPoint("Marrakech", 1, depart.plusHours(3), new BigDecimal("120"))));
+                creerPoint("Rabat", 0, depart, 0.0),
+                creerPoint("Marrakech", 1, depart.plusHours(3), 120.0)));
 
         Vehicule vehicule = new Vehicule();
         vehicule.setCapacite(4);
@@ -117,7 +116,7 @@ class TrajetServiceImplTest {
             String ville,
             int ordre,
             LocalDateTime heurePassage,
-            BigDecimal prixDepuisDepart) {
+            Double prixDepuisDepart) {
         PointArretRequest point = new PointArretRequest();
         point.setVille(ville);
         point.setOrdre(ordre);

@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.dtos.responses;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.Getter;
@@ -16,6 +15,6 @@ public class PointArretResponse {
     private String ville;
     private Integer ordre;
     private LocalDateTime heurePassage;
-    private BigDecimal prixDepuisDepart;
+    private Double prixDepuisDepart;
     private Long trajetId;
 }

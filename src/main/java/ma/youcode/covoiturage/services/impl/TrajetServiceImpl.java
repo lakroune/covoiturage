@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.services.impl;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class TrajetServiceImpl implements TrajetService {
             throw new BusinessException("Le premier point d'arret doit avoir l'ordre 0");
         }
 
-        if (pointsTries.get(0).getPrixDepuisDepart().compareTo(BigDecimal.ZERO) != 0) {
+        if (pointsTries.get(0).getPrixDepuisDepart() != 0.0) {
             throw new BusinessException("Le prix du premier point doit etre egal a 0");
         }
 
@@ -185,7 +184,7 @@ public class TrajetServiceImpl implements TrajetService {
             String villeArrivee,
             LocalDate date,
             Integer nombrePlaces,
-            BigDecimal prixMax,
+            Double prixMax,
             Pageable pageable) {
         log.info("Recherche de trajets, depart={}, arrivee={}, date={}", villeDepart, villeArrivee, date);
         if (pageable.isPaged() && pageable.getPageSize() <= 0) {
@@ -267,4 +266,5 @@ public class TrajetServiceImpl implements TrajetService {
         log.info("Trajet annule avec succes, id={}", id);
         return trajetMapper.toResponse(trajetAnnule);
     }
+
 }

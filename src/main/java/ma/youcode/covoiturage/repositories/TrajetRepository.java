@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,12 +31,8 @@ public interface TrajetRepository extends JpaRepository<Trajet, Long> {
               AND t.placesProposees >= :nombrePlaces + COALESCE(
                     (SELECT SUM(reservation.nombrePlaces)
                      FROM Reservation reservation
-                     JOIN reservation.pointMontee reservationDepart
-                     JOIN reservation.pointDescente reservationArrivee
                      WHERE reservation.trajet = t
-                       AND reservation.statut = :statutReservation
-                       AND reservationDepart.ordre < arrivee.ordre
-                       AND reservationArrivee.ordre > depart.ordre), 0)
+                       AND reservation.statut = :statutReservation), 0)
             """,
             countQuery = """
             SELECT COUNT(DISTINCT t.id)
@@ -54,12 +49,8 @@ public interface TrajetRepository extends JpaRepository<Trajet, Long> {
               AND t.placesProposees >= :nombrePlaces + COALESCE(
                     (SELECT SUM(reservation.nombrePlaces)
                      FROM Reservation reservation
-                     JOIN reservation.pointMontee reservationDepart
-                     JOIN reservation.pointDescente reservationArrivee
                      WHERE reservation.trajet = t
-                       AND reservation.statut = :statutReservation
-                       AND reservationDepart.ordre < arrivee.ordre
-                       AND reservationArrivee.ordre > depart.ordre), 0)
+                       AND reservation.statut = :statutReservation), 0)
             """)
     Page<Trajet> searchAvailableSegments(
             @Param("villeDepart") String villeDepart,
@@ -67,7 +58,7 @@ public interface TrajetRepository extends JpaRepository<Trajet, Long> {
             @Param("dateDebut") LocalDateTime dateDebut,
             @Param("dateFin") LocalDateTime dateFin,
             @Param("nombrePlaces") Integer nombrePlaces,
-            @Param("prixMax") BigDecimal prixMax,
+            @Param("prixMax") Double prixMax,
             @Param("statutTrajet") StatutTrajet statutTrajet,
             @Param("statutReservation") StatutReservation statutReservation,
             Pageable pageable);

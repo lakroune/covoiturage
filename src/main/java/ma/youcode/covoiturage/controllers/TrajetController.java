@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.controllers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -127,7 +126,7 @@ public class TrajetController {
             @RequestParam String villeArrivee,
             @RequestParam LocalDate date,
             @RequestParam Integer nombrePlaces,
-            @RequestParam BigDecimal prixMax,
+            @RequestParam Double prixMax,
             @PageableDefault(size = 10) Pageable pageable) {
         return trajetService.search(
                 villeDepart, villeArrivee, date, nombrePlaces, prixMax, pageable);

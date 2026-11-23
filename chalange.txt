@@ -1,0 +1,140 @@
+CHALLENGES JAVA STREAM - PROJET COVOITURAGE
+===========================================
+
+Objectif : pratiquer les Streams Java du niveau facile au niveau difficile.
+Ne pas utiliser de boucle for classique sauf si c'est explicitement demandé.
+
+
+1. LISTER LES CONDUCTEURS
+--------------------------
+À partir d'une List<Conducteur>, retourner la liste des noms de tous les
+conducteurs avec map().
+
+Méthodes conseillées : stream(), map(), toList().
+
+
+2. FILTRER LES CONDUCTEURS PAR PRÉNOM
+-------------------------------------
+À partir d'une List<Conducteur>, retourner uniquement les conducteurs dont le
+prénom est "Youssef".
+
+Méthodes conseillées : filter(), equalsIgnoreCase(), toList().
+
+
+3. RECHERCHER UN CONDUCTEUR PAR EMAIL
+-------------------------------------
+Rechercher un conducteur à partir de son email et retourner un
+Optional<Conducteur>.
+
+Si aucun conducteur ne correspond, retourner Optional.empty().
+
+Méthodes conseillées : filter(), findFirst().
+
+
+4. COMPTER LES VÉHICULES PAR CONDUCTEUR
+---------------------------------------
+Pour chaque conducteur, calculer le nombre de véhicules qu'il possède.
+
+Retourner un résultat de type Map<Long, Long> contenant :
+- la clé : l'identifiant du conducteur ;
+- la valeur : le nombre de ses véhicules.
+
+Méthodes conseillées : map(), collect(), Collectors.toMap().
+
+
+5. LISTER LES VÉHICULES DISPONIBLES
+-----------------------------------
+À partir d'une List<Vehicule>, retourner uniquement les véhicules dont la
+capacité est supérieure ou égale à 4 places.
+
+Méthodes conseillées : filter(), sorted(), toList().
+
+Trier le résultat par capacité croissante.
+
+
+6. CALCULER LA CAPACITÉ MOYENNE
+-------------------------------
+Calculer la capacité moyenne de tous les véhicules.
+
+Retourner un OptionalDouble ou une valeur par défaut de 0 si la liste est
+vide.
+
+Méthodes conseillées : mapToInt(), average(), orElse().
+
+
+7. LISTER LES VILLES D'UN TRAJET
+--------------------------------
+À partir d'un Trajet qui contient plusieurs PointArret, retourner les noms
+des villes dans l'ordre du parcours.
+
+Le résultat doit respecter l'ordre du champ ordre des points d'arrêt.
+
+Méthodes conseillées : stream(), sorted(), map(), toList().
+
+
+8. TROUVER LE TRAJET LE PLUS CHER
+---------------------------------
+À partir d'une List<Trajet>, trouver le trajet dont le prix du dernier point
+d'arrêt est le plus élevé.
+
+Retourner un Optional<Trajet>.
+
+Méthodes conseillées : map(), max(), Comparator.comparing().
+
+
+9. GROUPER LES RÉSERVATIONS PAR STATUT
+--------------------------------------
+À partir d'une List<Reservation>, regrouper les réservations par leur statut.
+
+Retourner un résultat de type :
+Map<StatutReservation, List<Reservation>>
+
+Méthodes conseillées : collect(), Collectors.groupingBy().
+
+
+10. RECHERCHER DES TRAJETS PAR SEGMENT
+--------------------------------------
+À partir d'une List<Trajet>, rechercher les trajets qui respectent toutes
+les conditions suivantes :
+
+- le trajet contient une ville de départ donnée ;
+- le trajet contient une ville d'arrivée donnée ;
+- l'ordre du départ est inférieur à l'ordre de l'arrivée ;
+- le nombre de places restantes est suffisant ;
+- le statut du trajet est PUBLIE ;
+- le prix du segment ne dépasse pas un prix maximum ;
+- les résultats sont triés par date de départ croissante ;
+- la pagination est appliquée après le tri.
+
+Exemple :
+villeDepart = "Casablanca"
+villeArrivee = "Marrakech"
+nombrePlaces = 2
+prixMax = 150
+page = 0
+size = 10
+
+Méthodes conseillées :
+flatMap(), filter(), anyMatch(), sorted(), skip(), limit(), toList().
+
+
+MÉTHODES STREAM À PRATIQUER
+===========================
+
+filter()
+map()
+flatMap()
+sorted()
+distinct()
+count()
+findFirst()
+findAny()
+max()
+min()
+anyMatch()
+allMatch()
+groupingBy()
+toMap()
+skip()
+limit()
+toList()

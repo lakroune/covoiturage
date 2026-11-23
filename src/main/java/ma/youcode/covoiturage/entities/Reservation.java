@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -44,7 +43,7 @@ public class Reservation {
     private Integer nombrePlaces;
 
     @Column(nullable = false)
-    private BigDecimal montantTotal;
+    private Double montantTotal;
 
     @Column(nullable = false)
     private LocalDateTime dateReservation;

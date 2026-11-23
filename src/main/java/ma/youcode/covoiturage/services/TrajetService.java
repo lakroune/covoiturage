@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public interface TrajetService {
             String villeArrivee,
             LocalDate date,
             Integer nombrePlaces,
-            BigDecimal prixMax,
+            Double prixMax,
             Pageable pageable);
 
     TrajetResponse terminer(Long id);

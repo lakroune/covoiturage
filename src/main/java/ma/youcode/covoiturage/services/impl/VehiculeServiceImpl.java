@@ -1,6 +1,8 @@
 package ma.youcode.covoiturage.services.impl;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalDouble;
 
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequest;
 import ma.youcode.covoiturage.dtos.requests.VehiculeRequestUpdate;
@@ -107,4 +109,5 @@ public class VehiculeServiceImpl implements VehiculeService {
         vehiculeRepository.delete(vehicule);
         log.info("Vehicule supprime avec succes, id={}", id);
     }
+
 }

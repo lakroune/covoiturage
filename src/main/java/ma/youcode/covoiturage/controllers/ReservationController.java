@@ -41,7 +41,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "Réservation impossible"),
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public ReservationResponse create(@Valid @RequestBody ReservationRequest request) {
         return reservationService.create(request);
     }

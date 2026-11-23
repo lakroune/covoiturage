@@ -64,7 +64,7 @@ public class ConducteurController {
 
 
 
-    
+
     @GetMapping("/{id}")
     @Operation(
             summary = "Consulter un conducteur",
@@ -98,6 +98,9 @@ public class ConducteurController {
         return conducteurService.update(id, request);
     }
 
+
+
+
     @GetMapping(value = "/search", params = "nom")
     @Operation(
             summary = "Rechercher des conducteurs par nom",
@@ -110,6 +113,9 @@ public class ConducteurController {
     public List<ConducteurResponse> searchByNom(@RequestParam String nom) {
         return conducteurService.serachByNom(nom);
     }
+
+
+
 
     @GetMapping(value = "/search", params = "email")
     @Operation(
@@ -125,6 +131,9 @@ public class ConducteurController {
         return conducteurService.searchByEmail(email);
     }
 
+
+
+
     @GetMapping("/{id}/vehicules")
     @Operation(
             summary = "Consulter les véhicules d'un conducteur",
@@ -138,6 +147,9 @@ public class ConducteurController {
     public List<VehiculeResponse> findVehiculesByConducteur(@PathVariable Long id) {
         return conducteurService.findVehiculesByConducteur(id);
     }
+
+
+
 
     @GetMapping("/{id}/trajets")
     @Operation(

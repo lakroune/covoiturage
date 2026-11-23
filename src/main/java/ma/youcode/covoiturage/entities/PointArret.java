@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class PointArret {
     private LocalDateTime heurePassage;
 
     @Column(nullable = false)
-    private BigDecimal prixDepuisDepart;
+    private Double prixDepuisDepart;
 
     @ManyToOne
     @JoinColumn(name = "trajet_id", nullable = false)

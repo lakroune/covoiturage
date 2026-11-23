@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.services.impl;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,6 +52,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trajet introuvable avec l'identifiant : " + request.getTrajetId()));
 
+        if (reservationRepository.existsByTrajetIdAndPassagerId(
+                request.getTrajetId(), request.getPassagerId())) {
+            throw new ConflictException(
+                    "Le passager possède déjà une réservation pour ce trajet.");
+        }
 
 
         if (trajet.getStatut() != StatutTrajet.PUBLIE) {
@@ -75,8 +79,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         int placesReservees = trajet.getReservations().stream()
                 .filter(reservation -> reservation.getStatut() == StatutReservation.CONFIRMEE)
-                .filter(reservation -> reservationChevauche(
-                        reservation, pointMontee.getOrdre(), pointDescente.getOrdre()))
                 .mapToInt(Reservation::getNombrePlaces)
                 .sum();
 
@@ -86,16 +88,14 @@ public class ReservationServiceImpl implements ReservationService {
                     "Nombre de places insuffisant. Places restantes : " + placesRestantes);
         }
 
-        BigDecimal prixSegment = pointDescente.getPrixDepuisDepart()
-                .subtract(pointMontee.getPrixDepuisDepart());
-
         Reservation reservation = reservationMapper.toEntity(request);
         reservation.setPointMontee(pointMontee);
         reservation.setPointDescente(pointDescente);
         reservation.setPassager(passager);
         reservation.setTrajet(trajet);
-        reservation.setMontantTotal(
-                prixSegment.multiply(BigDecimal.valueOf(request.getNombrePlaces())));
+        double prixSegment = pointDescente.getPrixDepuisDepart()
+                - pointMontee.getPrixDepuisDepart();
+        reservation.setMontantTotal(prixSegment * request.getNombrePlaces());
         reservation.setDateReservation(LocalDateTime.now());
         reservation.setStatut(StatutReservation.CONFIRMEE);
 
@@ -110,18 +110,6 @@ public class ReservationServiceImpl implements ReservationService {
                         "Point d'arrêt introuvable avec l'identifiant : " + id));
     }
 
-    private boolean reservationChevauche(
-            Reservation reservation, int ordreMontee, int ordreDescente) {
-        PointArret reservationMontee = reservation.getPointMontee();
-        PointArret reservationDescente = reservation.getPointDescente();
-
-        return reservationMontee.getOrdre() < ordreDescente
-                && reservationDescente.getOrdre() > ordreMontee;
-    }
-
-
-
-    
     @Override
     public ReservationResponse findById(Long id) {
         Reservation reservation = reservationRepository.findById(id)

@@ -1,6 +1,10 @@
 package ma.youcode.covoiturage.services.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +14,7 @@ import ma.youcode.covoiturage.dtos.responses.ConducteurResponse;
 import ma.youcode.covoiturage.dtos.responses.TrajetResponse;
 import ma.youcode.covoiturage.dtos.responses.VehiculeResponse;
 import ma.youcode.covoiturage.entities.Conducteur;
+import ma.youcode.covoiturage.entities.Vehicule;
 import ma.youcode.covoiturage.exceptions.ConflictException;
 import ma.youcode.covoiturage.exceptions.ResourceNotFoundException;
 import ma.youcode.covoiturage.mappers.ConducteurMapper;
@@ -141,5 +146,4 @@ public class ConducteurServiceImpl implements ConducteurService {
         log.info("Recherche de conducteurs par nom terminee, nombre={}", conducteurs.size());
         return conducteurs;
     }
-
 }

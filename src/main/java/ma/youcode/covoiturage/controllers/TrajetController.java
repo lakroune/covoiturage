@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.controllers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,6 +38,17 @@ public class TrajetController {
     private final TrajetService trajetService;
 
     @PostMapping
+    @Operation(
+            summary = "Publier un trajet",
+            description = "Crée et publie un trajet avec son véhicule, ses places proposées et ses points d'arrêt ordonnés.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Trajet créé avec succès"),
+            @ApiResponse(responseCode = "400", description = "Données invalides ou points d'arrêt incohérents"),
+            @ApiResponse(responseCode = "404", description = "Véhicule introuvable"),
+            @ApiResponse(responseCode = "409", description = "Règle métier violée"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
     public TrajetResponse create(@Valid @RequestBody TrajetRequest request) {
         return trajetService.create(request);
     }
@@ -116,7 +126,7 @@ public class TrajetController {
             @RequestParam String villeArrivee,
             @RequestParam LocalDate date,
             @RequestParam Integer nombrePlaces,
-            @RequestParam BigDecimal prixMax,
+            @RequestParam Double prixMax,
             @PageableDefault(size = 10) Pageable pageable) {
         return trajetService.search(
                 villeDepart, villeArrivee, date, nombrePlaces, prixMax, pageable);

@@ -1,6 +1,5 @@
 package ma.youcode.covoiturage.dtos.requests;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.DecimalMin;
@@ -30,5 +29,5 @@ public class PointArretRequest {
 
     @NotNull(message = "Le prix depuis le départ est obligatoire")
     @DecimalMin(value = "0.0", inclusive = true, message = "Le prix doit être positif ou nul")
-    private BigDecimal prixDepuisDepart;
+    private Double prixDepuisDepart;
 }
